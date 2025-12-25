@@ -2,18 +2,39 @@
 using System.Collections.Generic;
 using SystemScripts;
 using UnityEngine;
+using UnityEngine.TextCore;
 
 namespace EnemyScripts
 {
     public class EnemyController : MonoBehaviour
     {
-        public int speed = 2;
+        [Header("移动设置")]
+        public float speed = 2;
         public float pushForce = 500;
         public bool isTouchByPlayer;
 
-        private Animator _enemyAnim;
+        [Header("巡逻模式设置")]
+        public bool isPatrolling = false;  // 是否启用巡逻模式
+        public Vector3 patrolPointA;     // 巡逻点A（世界坐标）
+        public Vector3 patrolPointB;     // 巡逻点B（世界坐标）
+        public float patrolSwitchDistance = 0.1f;  // 切换巡逻点的距离阈值
+
+        [Header("组件引用")]
         public List<Collider2D> deadDisableCollider;
         public Collider2D deadEnableCollider;
+        public SpriteRenderer spriteTrans;
+        public Rigidbody2D rigidbody2D;
+        public FlyKoopa flyKoopa;
+        public Beatles beatles;
+        public FlyFish flyFish;
+        public bool canMove = true;
+
+        bool isDead = false;
+
+        private Animator _enemyAnim;
+        private Vector3 _currentPatrolTarget;  // 当前巡逻目标点
+        public Vector3 _moveDirection = Vector3.left;  // 移动方向
+        bool isCanMove = false;
 
         private static readonly int DieB = Animator.StringToHash("Die_b");
 
@@ -22,14 +43,97 @@ namespace EnemyScripts
             _enemyAnim = GetComponent<Animator>();
         }
 
+        private void Start()
+        {
+            isCanMove = canMove;
+            OnBeginMove();
+        }
+
+        public void OnBeginMove()
+        {
+            rigidbody2D.isKinematic = isPatrolling;
+            if (isPatrolling)
+            {
+                _currentPatrolTarget = patrolPointA;  // 直接使用世界坐标
+                _moveDirection = GetMoveDirection(_currentPatrolTarget);
+            }
+            isTouchByPlayer = false;
+            for (var i = 0; i < deadDisableCollider.Count; i++)
+            {
+                deadDisableCollider[i].enabled = true;
+            }
+            if (deadEnableCollider != null)
+            {
+                deadEnableCollider.enabled = false;
+            }
+            isPatrolling = false;
+            canMove = isCanMove;
+            isDead = false;
+
+            if (_enemyAnim)
+            {
+                _enemyAnim.Rebind();
+                _enemyAnim.Update(0f);
+            }
+            spriteTrans.flipY = false;
+            if(flyFish) flyFish.StartFlight();
+            if (flyKoopa) flyKoopa.OnStartFly();
+            if(beatles) beatles.OnBeginCheck();
+        }
+
         private void Update()
         {
-            Move();
+            if (canMove)
+                Move();
         }
 
         private void Move()
         {
-            transform.Translate(speed * Time.deltaTime * Vector3.left);
+            if (isPatrolling)
+            {
+                // 直接向目标点移动
+                transform.position = Vector3.MoveTowards(transform.position, _currentPatrolTarget, speed * Time.deltaTime);
+
+                // 更新精灵朝向
+                if (spriteTrans != null)
+                {
+                    spriteTrans.flipX = _moveDirection.x > 0;
+                }
+
+                PFunc.Log("检查是否到达目标点", _currentPatrolTarget, (Vector3.Distance(transform.position, _currentPatrolTarget) < patrolSwitchDistance));
+                // 检查是否到达目标点
+                if (Mathf.Abs(transform.position.x - _currentPatrolTarget.x) <= patrolSwitchDistance)
+                {
+                    // 切换目标点
+                    _currentPatrolTarget = (_currentPatrolTarget == patrolPointA) ? patrolPointB : patrolPointA;
+                    _moveDirection = GetMoveDirection(_currentPatrolTarget);
+                }
+            }
+            else
+            {
+                // 原模式：向左移动，碰撞时转向
+                transform.Translate(speed * Time.deltaTime * _moveDirection);
+            }
+        }
+
+        // 获取移动到目标的方向
+        private Vector3 GetMoveDirection(Vector3 target)
+        {
+            Vector3 direction = (target - transform.position).normalized;
+            return direction;
+        }
+
+        // 外部调用改变移动方向
+        public void ChangeDirection()
+        {
+            if (!isPatrolling)  // 巡逻模式下不通过碰撞改变方向
+            {
+                if (spriteTrans != null)
+                {
+                    spriteTrans.flipX = !spriteTrans.flipX;
+                }
+                _moveDirection = (_moveDirection == Vector3.left) ? Vector3.right : Vector3.left;
+            }
         }
 
         public void Die()
@@ -45,8 +149,14 @@ namespace EnemyScripts
             {
                 deadEnableCollider.enabled = true;
             }
+            rigidbody2D.isKinematic = false;
+            isPatrolling = false;
+            canMove = false;
+            isDead = true;
+            if (flyKoopa) flyKoopa.StopFlying();
 
             _enemyAnim.SetBool(DieB, true);
+       
             if (CompareTag("Goomba"))
             {
                 StartCoroutine(Destroy());
@@ -55,36 +165,80 @@ namespace EnemyScripts
 
         private void OnCollisionEnter2D(Collision2D other)
         {
+            // 巡逻模式下不通过碰撞改变方向
+            if (isPatrolling) return;
+
+            // 简化碰撞检测逻辑
             if (CompareTag("KoopaShell"))
             {
-                if (!other.gameObject.CompareTag("Player") && !other.gameObject.CompareTag("Ground") &&
-                    !other.gameObject.CompareTag("Brick") && !other.gameObject.CompareTag("ScreenBorder") &&
-                    !other.gameObject.CompareTag("Goomba") && !other.gameObject.CompareTag("Koopa"))
+                // 龟壳特殊处理
+                if (!IsValidCollisionTarget(other.gameObject.tag))
                 {
-                    transform.Rotate(0, 180, 0);
+                    ChangeDirection();
                 }
             }
             else
             {
-                if (!other.gameObject.CompareTag("Player") && !other.gameObject.CompareTag("Ground") &&
-                    !other.gameObject.CompareTag("Brick") && !other.gameObject.CompareTag("ScreenBorder"))
+                // 普通敌人处理
+                if (!IsValidCollisionTarget(other.gameObject.tag))
                 {
-                    transform.Rotate(0, 180, 0);
+                    ChangeDirection();
                 }
             }
 
+            // 被火球或龟壳击中
             if (other.gameObject.CompareTag("KoopaShell") || other.gameObject.CompareTag("Fireball"))
             {
                 GameStatusController.Score += 200;
                 GameStatusController.IsEnemyDieOrCoinEat = true;
-                Destroy(gameObject);
+                StartCoroutine(Destroy());
+            }
+        }
+
+        // 检查是否为有效的碰撞目标（不会导致转向的物体）
+        private bool IsValidCollisionTarget(string otherTag)
+        {
+            if (CompareTag("KoopaShell"))
+            {
+                return otherTag == "Player" || otherTag == "Ground" ||
+                       otherTag == "Brick" || otherTag == "ScreenBorder" ||
+                       otherTag == "Goomba" || otherTag == "Koopa";
+            }
+            else
+            {
+                return otherTag == "Player" || otherTag == "Ground" ||
+                       otherTag == "Brick" || otherTag == "ScreenBorder";
+            }
+        }
+
+        // 在编辑器场景中绘制巡逻点
+        private void OnDrawGizmosSelected()
+        {
+            if (isPatrolling && patrolPointA != Vector3.zero && patrolPointB != Vector3.zero)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawSphere(patrolPointA, 0.2f);
+                Gizmos.DrawSphere(patrolPointB, 0.2f);
+                Gizmos.DrawLine(patrolPointA, patrolPointB);
+
+                // 绘制当前巡逻目标
+                if (Application.isPlaying)
+                {
+                    Gizmos.color = Color.red;
+                    Gizmos.DrawSphere(_currentPatrolTarget, 0.3f);
+                }
             }
         }
 
         IEnumerator Destroy()
         {
-            yield return new WaitForSeconds(0.3f);
-            Destroy(gameObject);
+            spriteTrans.flipY = true;
+            Vector3 dropDir = _moveDirection == Vector3.left ? new Vector3(4, 1, 0) : new Vector3(-4, 1, 0);
+            rigidbody2D.AddForce(dropDir,ForceMode2D.Impulse);
+            yield return new WaitForSeconds(0.1f);
+            rigidbody2D.isKinematic = true;
+            yield return new WaitForSeconds(0.5f);
+            SimplePool.Despawn(gameObject);
         }
     }
 }

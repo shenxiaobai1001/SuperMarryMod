@@ -44,10 +44,10 @@ namespace EnemyScripts
                 if (!playerController.isInvulnerable)
                 {
                     _enemyAudio.PlayOneShot(hitPlayerSound);
-                    GameStatusController.IsDead = true;
-                    GameStatusController.Live -= 1;
-                    playerController.GetComponent<Rigidbody2D>().isKinematic = true;
-                    playerController.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                    //GameStatusController.IsDead = true;
+                   // GameStatusController.Live -= 1;
+                    //playerController.GetComponent<Rigidbody2D>().isKinematic = true;
+                    //playerController.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
                 }
                 else
                 {

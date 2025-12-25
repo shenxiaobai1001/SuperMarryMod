@@ -7,6 +7,8 @@ namespace PlayerScripts
 {
     public class PlayerController : MonoBehaviour
     {
+        public static PlayerController Instance;
+
         public float speed = 410f;
         public float slideDownSpeed = 410f;
         public float jumpForce = 795f;
@@ -73,6 +75,15 @@ namespace PlayerScripts
 
         void Awake()
         {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
             _isFacingRight = true;
             isInvulnerable = false;
             if (GameStatusController.PlayerTag != null)
@@ -487,14 +498,14 @@ namespace PlayerScripts
         {
             if (_playerRb.velocity.y > 0 || _playerRb.velocity.y < 0)
             {
-                _isOnGround = false;
+                //_isOnGround = false;
                 _playerAnim.SetBool(IdleB, false);
                 _playerAnim.SetBool(WalkB, false);
                 _playerAnim.SetBool(RunB, false);
             }
             else
             {
-                _isOnGround = true;
+                //_isOnGround = true;
                 _playerAnim.SetBool(IdleB, true);
                 _playerAnim.SetBool(WalkB, true);
                 _playerAnim.SetBool(RunB, true);

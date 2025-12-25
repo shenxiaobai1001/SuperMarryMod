@@ -7,6 +7,7 @@ namespace EnemyScripts
     public class KoopaShell : MonoBehaviour
     {
         public GameObject koopa;
+        public EnemyController controller;
         private bool _isMoveRight;
         private bool _isMove;
         private bool _isPlayerKillable;
@@ -23,19 +24,11 @@ namespace EnemyScripts
             _enemyAudio = GetComponent<AudioSource>();
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-            if (_isMove)
-            {
-                Move();
-            }
-        }
-
         private void OnCollisionEnter2D(Collision2D other)
         {
-            if (!other.gameObject.CompareTag("Player"))
+            if (!other.gameObject.CompareTag("Player")&&!other.gameObject.CompareTag("Ground"))
             {
+                PFunc.Log(other.gameObject.tag);
                 _enemyAudio.PlayOneShot(kickSound);
             }
 
@@ -46,30 +39,31 @@ namespace EnemyScripts
                     koopa.tag = "KoopaShell";
                     Vector3 relative = transform.InverseTransformPoint(other.transform.position);
                     float angle = Mathf.Atan2(relative.x, relative.y) * Mathf.Rad2Deg;
-                    _isMove = true;
+               
                     if (other.gameObject.CompareTag("Player"))
                     {
                         if (angle > 0)
                         {
-                            _isMoveRight = false;
+                            controller._moveDirection = Vector3.left;
                         }
                         else
                         {
-                            _isMoveRight = true;
+                            controller._moveDirection = Vector3.right;
                         }
                     }
                     else if (other.gameObject.CompareTag("BigPlayer"))
                     {
                         if (angle < 0)
                         {
-                            _isMoveRight = false;
+                            controller._moveDirection = Vector3.left;
                         }
                         else
                         {
-                            _isMoveRight = true;
+                            controller._moveDirection = Vector3.right;
                         }
                     }
-
+                    controller.canMove = true;
+                    controller.speed = speed;
                     _isPlayerKillable = true;
                 }
             }
@@ -102,18 +96,6 @@ namespace EnemyScripts
                     playerController.isInvulnerable = true;
                     // StartCoroutine(Die(other.gameObject));
                 }
-            }
-        }
-
-        private void Move()
-        {
-            if (_isMoveRight)
-            {
-                koopa.transform.Translate(speed * Time.deltaTime * Vector3.right);
-            }
-            else
-            {
-                koopa.transform.Translate(-speed * Time.deltaTime * Vector3.right);
             }
         }
     }

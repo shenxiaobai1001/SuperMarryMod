@@ -115,6 +115,7 @@ namespace SystemScripts
                 gameStatusController.SetTime(time -= Time.deltaTime * 2);
                 if (time < 0)
                 {
+                    PFunc.Log("掉到坑里");
                     time = 0;
                     GameStatusController.IsDead = true;
                 }
