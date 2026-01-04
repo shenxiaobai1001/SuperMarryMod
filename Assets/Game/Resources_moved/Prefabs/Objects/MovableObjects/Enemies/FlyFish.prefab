@@ -110,9 +110,11 @@ MonoBehaviour:
   spriteTrans: {fileID: 2521113792995861571}
   rigidbody2D: {fileID: 2982830266454992159}
   flyKoopa: {fileID: 0}
+  beatles: {fileID: 0}
   flyFish: {fileID: 6496329593235620972}
+  bodys:
+  - {fileID: 7300244701144373030}
   canMove: 1
-  isKinematic: 1
   _moveDirection: {x: -1, y: 0, z: 0}
 --- !u!114 &6496329593235620972
 MonoBehaviour:

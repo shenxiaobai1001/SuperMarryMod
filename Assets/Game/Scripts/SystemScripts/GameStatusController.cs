@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -44,6 +46,8 @@ namespace SystemScripts
         public static bool IsPowerUpEat;
         public static bool IsShowMessage;
         public static string PlayerTag;
+        public static bool IsHidden;
+        public static bool HiddenMove;
         private float _second;
 
         private void Awake()
@@ -51,6 +55,8 @@ namespace SystemScripts
             SetScore(playerHighScoreText, _highScore);
             _gameStatusAudio = GetComponent<AudioSource>();
             _pauseTrigger = false;
+            mLife = ModData.mLife;
+            tx_life.text = mLife.ToString();
         }
 
         private void Update()
@@ -161,7 +167,7 @@ namespace SystemScripts
 
         private void SetLive()
         {
-            livesText.SetText($"x {Live.ToString()}");
+            livesText.SetText($"x {ModData.mLife.ToString()}");
         }
 
         private void Pause()
@@ -180,7 +186,8 @@ namespace SystemScripts
 
         public void StartGame()
         {
-            SceneManager.LoadScene(1);
+            Config.passIndex = 0;
+            GameModController.Instance.OnLoadScene("1-1");
             CurrentLevel = 2;
             Live = 3;
             Score = 0;
@@ -237,6 +244,77 @@ namespace SystemScripts
         {
             yield return new WaitForSeconds(1.5f);
             secondMessagePopup.SetActive(true);
+        }
+
+        private void Start()
+        {
+            if (currentLifeCoroutine != null)
+            {
+                StopCoroutine(currentLifeCoroutine);
+            }
+            PFunc.Log("实时判断变化方向", mLife, ModData.mLife);
+            // 启动新的协程处理生命值变化
+            currentLifeCoroutine = StartCoroutine(ChangeLifeCoroutine());
+
+            if (currentCretateine != null)
+            {
+                StopCoroutine(currentCretateine);
+            }
+            currentLifeCoroutine = StartCoroutine(OnShowCreateCount());
+        }
+        public TextMeshProUGUI tx_life;
+        int mLife = 0;
+        private Coroutine currentLifeCoroutine; // 保存当前运行的协程引用
+        private Coroutine currentCretateine; // 保存当前运行的协程引用
+        public void OnChangeLife(object msg)
+        {
+            // 如果已有协程在运行，先停止它
+      
+        }
+
+        IEnumerator ChangeLifeCoroutine()
+        {
+            // 持续变化直到当前生命值等于目标值
+            while (true)
+            {
+                // 实时判断变化方向
+                if (mLife < ModData.mLife)
+                {
+                    Sound.PlaySound("smb_1-up");
+                    mLife++;
+                }
+                else if(mLife > ModData.mLife)
+                {
+                    mLife--;
+                }
+                //PFunc.Log("实时判断变化方向", mLife, ModData.mLife);
+                tx_life.text = mLife.ToString();
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+        public TextMeshProUGUI tx_createCount;
+
+        IEnumerator OnShowCreateCount()
+        {
+            // 持续变化直到当前生命值等于目标值
+            while (true)
+            {
+                string showValue = "00";
+              if (ItemCreater.Instance.qlCount>0 || ItemCreater.Instance.tcCount > 0)
+                {
+                    showValue = $"Q:{ItemCreater.Instance.qlCount}/T:{ItemCreater.Instance.tcCount}";
+                }
+                else if (MonsterCreater.Instance.MonsterCount>0)
+                {
+                    showValue = $"{MonsterCreater.Instance.MonsterCount}";
+                }
+                else if (ItemCreater.Instance.allReadyCreateDuck > 0)
+                {
+                    showValue = $"DUCK:{ItemCreater.Instance.allReadyCreateDuck}";
+                }
+                tx_createCount.text = showValue;
+                yield return new WaitForSeconds(0.1f);
+            }
         }
     }
 }

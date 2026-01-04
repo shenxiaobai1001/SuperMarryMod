@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Video;
 using YooAsset;
 
@@ -10,6 +11,7 @@ public static class Loaded
 {
     public static string resourcePath = "Assets/Game/Resources_moved/";
     public static string videoFilePath = "Assets/Game/Resources_video/";
+    public static string scencePath = "Assets/Game/Scenes/";
     /// <summary>
     /// 加载资源
     /// </summary>
@@ -74,10 +76,31 @@ public static class Loaded
     }
 
     /// <summary>加载场景 </summary>
-    public static SceneHandle OnLoadScence(string location)
+    public static SceneHandle OnLoadScence(string name)
     {
         if (YooUpdateManager.MainPackage != null)
-          return  YooUpdateManager.MainPackage.LoadSceneAsync(location);
+        {
+            var sceneMode = LoadSceneMode.Single;
+            var physicsMode = LocalPhysicsMode.None;
+            var suspendLoad = false;
+            string location = $"{scencePath}{name}";
+            Debug.Log("加载场景："+location);
+
+            return YooUpdateManager.MainPackage.LoadSceneAsync(location, sceneMode, physicsMode, suspendLoad);
+        }
+         
         return null;
+    }    
+
+    /// <summary>加载视频 </summary>
+    public static async Task<string> OnLoadVideoAsync(string location)
+    {
+        string videoPath = videoFilePath + location;
+        if (YooUpdateManager.VideoPackage == null) return string.Empty;
+        var handle = YooUpdateManager.VideoPackage.LoadRawFileAsync(videoPath);
+        await handle.Task;
+        string loadedVideoPath = handle.GetRawFilePath();
+        handle.Release();    // 释放加载的资源
+        return loadedVideoPath;
     }
 }

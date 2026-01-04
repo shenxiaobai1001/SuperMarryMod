@@ -14,29 +14,36 @@ namespace SystemScripts
         private void Start()
         {
             _loadSceneAudio = GetComponent<AudioSource>();
-            if (GameStatusController.Live < 1)
-            {
-                GameStatusController.IsGameOver = true;
-            }
+            //if (GameStatusController.Live < 1)
+            //{
+            //    GameStatusController.IsGameOver = true;
+            //}
 
-            if (!GameStatusController.IsGameOver)
-            {
-                if (GameStatusController.IsDead)
-                {
-                    StartCoroutine(RepeatLevelScene());
-                }
-                else
-                {
-                    StartCoroutine(LevelScene());
-                }
-            }
-            else
-            {
-                liveStat.SetActive(false);
-                gameOverPopup.SetActive(true);
-                _loadSceneAudio.PlayOneShot(gameOverSound);
-                StartCoroutine(StartingScene());
-            }
+            //if (!GameStatusController.IsGameOver)
+            //{
+            //    if (GameStatusController.IsDead)
+            //    {
+            //        StartCoroutine(RepeatLevelScene());
+            //    }
+            //    else
+            //    {
+            //        StartCoroutine(LevelScene());
+            //    }
+            //}
+            //else
+            //{
+            //    liveStat.SetActive(false);
+            //    gameOverPopup.SetActive(true);
+            //    _loadSceneAudio.PlayOneShot(gameOverSound);
+            //    StartCoroutine(StartingScene());
+            //}
+            Invoke("OnLoadFirstLevel",2.5f);
+        }
+
+        void OnLoadFirstLevel()
+        {
+            Config.passIndex = 0;
+            GameModController.Instance.OnLoadScene("1-1");
         }
 
         private static IEnumerator LevelScene()

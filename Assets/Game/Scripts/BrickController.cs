@@ -51,7 +51,7 @@ public class BrickController : MonoBehaviour
             // }
         }
 
-        else if ((other.gameObject.CompareTag("BigPlayer") || other.gameObject.CompareTag("UltimateBigPlayer")) &&
+        else if ( (other.gameObject.CompareTag("BigPlayer") || other.gameObject.CompareTag("UltimateBigPlayer")) &&
                  !isSpecialBrick)
         {
             _brickAudio.PlayOneShot(breakSound);
@@ -87,6 +87,19 @@ public class BrickController : MonoBehaviour
         {
             isTouchByPlayer = false;
             _brickAnim.SetBool(TouchB, isTouchByPlayer);
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Meteorite"))
+        {
+            _brickAudio.PlayOneShot(breakSound);
+            disableCollider.enabled = false;
+            GetComponent<BoxCollider2D>().enabled = false;
+            breakBrickPieces.SetActive(true);
+            animationSprite.SetActive(false);
+            _brickAnim.SetTrigger(TouchT);
+            StartCoroutine(Destroy());
         }
     }
 

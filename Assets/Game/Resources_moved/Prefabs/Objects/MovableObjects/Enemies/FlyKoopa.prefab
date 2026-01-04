@@ -113,8 +113,13 @@ MonoBehaviour:
   spriteTrans: {fileID: 1259000098758952970}
   rigidbody2D: {fileID: 6404056493425475542}
   flyKoopa: {fileID: 6077219469532273819}
+  beatles: {fileID: 0}
+  flyFish: {fileID: 0}
+  bodys:
+  - {fileID: 7456481597819947060}
+  - {fileID: 4068150850828265334}
+  - {fileID: 7314573248974223861}
   canMove: 1
-  isKinematic: 1
   _moveDirection: {x: -1, y: 0, z: 0}
 --- !u!114 &6077219469532273819
 MonoBehaviour:
@@ -139,6 +144,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   canFly: 1
   isJumping: 0
+  originalY: 0
 --- !u!1 &3897049333220653455
 GameObject:
   m_ObjectHideFlags: 0

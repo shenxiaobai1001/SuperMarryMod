@@ -34,6 +34,11 @@ TagManager:
   - Princess
   - Piranha
   - Fireball
+  - Monster
+  - Banana
+  - Meteorite
+  - Hidden
+  - outHidden
   layers:
   - Default
   - TransparentFX
@@ -42,11 +47,11 @@ TagManager:
   - Water
   - UI
   - 
-  - 
+  - LoseEnemy
   - Player
   - Enemy
   - PowerUps
-  - 
+  - ModItem
   - 
   - 
   - 
@@ -70,4 +75,22 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Video
+    uniqueID: 3671455831
+    locked: 0
+  - name: New Layer 2
+    uniqueID: 1077319881
+    locked: 0
+  - name: New Layer 3
+    uniqueID: 832946971
+    locked: 0
+  - name: New Layer 4
+    uniqueID: 3153734533
+    locked: 0
+  - name: New Layer 5
+    uniqueID: 1691370125
+    locked: 0
+  - name: Player
+    uniqueID: 3120348033
     locked: 0

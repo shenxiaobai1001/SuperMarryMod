@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Timers;
 using UnityEngine;
 
@@ -8,12 +9,13 @@ public class Sound
     public static float VolumeMusic = 0.5f;
 
     /// <summary>声音大小-音效</summary>
-    public static float VolumeSound = 0.75f;
+    public static float VolumeSound = 1;
+    public static float VideoVolume = 1;
 
     static GameObject MusicManager;
 
     static GameObject[] SoundManager;
-
+    public static Dictionary<string, AudioClip> musicBGM = new Dictionary<string, AudioClip>();
     /// <summary>音效最大数量(同时存在)</summary>
     static int MaxSoundNum = 20;
     /// <summary>当前使用的音效索引</summary>
@@ -30,11 +32,16 @@ public class Sound
         SoundManager = new GameObject[MaxSoundNum];
     }
 
-    public static void OnSetVolume(float musicValue,float soundValue)
+    public static void OnSetVolume(float musicValue, float soundValue)
     {
         VolumeMusic = musicValue;
         VolumeSound = soundValue;
-        if(MusicManager) MusicManager.GetComponent<AudioSource>().volume = VolumeMusic;
+        VideoVolume = soundValue;
+        PlayerPrefs.SetFloat("VolumeMusic", VolumeMusic);
+        PlayerPrefs.SetFloat("VolumeSound", VolumeSound);
+
+        PFunc.Log("    Sound.OnSetVolume", VolumeMusic, VolumeSound);
+        if (MusicManager) MusicManager.GetComponent<AudioSource>().volume = VolumeMusic;
     }
     /// <summary>获得音乐大小</summary>
     public static float GetVolumeMusic()
@@ -48,7 +55,7 @@ public class Sound
         return VolumeSound;
     }
     /// <summary>暂停或继续播放音乐</summary>
-    public static void PauseOrPlayVolumeMusic(bool pause=true)
+    public static void PauseOrPlayVolumeMusic(bool pause = true)
     {
         if (pause)
         {
@@ -59,7 +66,7 @@ public class Sound
         {
             hasPlayMusic = true;
             MusicManager.GetComponent<AudioSource>().Play();
-        }     
+        }
     }
 
     /// <summary>设置音乐大小</summary>
@@ -81,21 +88,21 @@ public class Sound
     }
 
     /// <summary>播放音乐</summary>
-    public static AudioSource PlayMusic(string url,bool loop)
+    public static AudioSource PlayMusic(string url, bool loop)
     {
         AudioClip clip = LoadAudioClip(url, true);
         if (clip == null) return null;
-        PlayingMusicName = clip.name; 
+        PlayingMusicName = clip.name;
         hasPlayMusic = true;
         return PlayAndReturn(MusicManager, clip, loop);
     }
-    
+
     /// <summary>播放音乐</summary>
     public static void PlayMusic(string url, bool show_warn_log = true, bool loop = true)
     {
         AudioClip clip = LoadAudioClip(url, show_warn_log);
         if (clip == null) return;
-        PlayingMusicName = clip.name; 
+        PlayingMusicName = clip.name;
         Play(MusicManager, clip, loop);
         hasPlayMusic = true;
     }
@@ -124,18 +131,22 @@ public class Sound
         }
     }
 
-        /// <summary>加载声音资源</summary>
-    public static AudioClip LoadAudioClip(string url,bool show_warn_log)
+    /// <summary>加载声音资源</summary>
+    public static AudioClip LoadAudioClip(string url, bool show_warn_log)
     {
         AudioClip clip = null;
         try
         {
-            clip = Loaded.Load<AudioClip>( $"{url}");
+            if (musicBGM != null && musicBGM.ContainsKey(url))
+            {
+                clip = musicBGM[url];
+            }
+            else
+            {
+                clip = Loaded.Load<AudioClip>($"{url}");
+            }
         }
         catch { }
-
-       // if (show_warn_log && clip == null) PFunc.Log("播放声音异常:找不到资源 ->", url);
-
         return clip;
     }
 
@@ -157,6 +168,6 @@ public class Sound
         source.Play();
         return source;
     }
-    
+
 }
 

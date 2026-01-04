@@ -1,26 +1,36 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine.Analytics;
 
 /// <summary>配置</summary>
 public class Config
 {
+    public static bool isLoading=false;
     public static int ClearType=1;
- 
+    public static string[] passName = new string[] { "1-1", "1-2", "1-3", "1-4", "2-1", "2-2", "2-3", "3-1", "3-2", "3-3", "3-4", "4-1", "4-2", "4-3" };
+    public static int chainCount;
+    public static int passIndex = 0;
+}                                                                    
+                                      
+/// <summary>事件合集 </summary>               
+public enum Events                                          
+{                                                                   
+    None,                                                         
+    OnChangeLife,                                            
+    OnModVideoPlayEnd,           
+    OnLazzerHit,
+}                                                                  
+// 移动方向                                                 
+public enum MoveDirection                                
+{                                                                     
+    Left,                                                           
+    Right
 }
-
-/// <summary>事件合集 </summary>
-public enum Events
+public enum MoveType
 {
-    None,
-    OnCreateBomb,
-    StandResbay,
-    OnTCMove,
-    OnQLMove,
-    FlyShaTimeChange,
-    FlyShaTimeOver,
-    ShieldTimeChange,
-    ShieldTimeOver,
-    OnCreateTrunck,
-    OnTrunckColse,
-    OnGameWin,
+    Normal,
+    HighLeft,
+    HighRight,
+    MaxLeft,
+    MaxRight
 }

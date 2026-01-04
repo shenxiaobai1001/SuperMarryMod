@@ -32,6 +32,7 @@ public class MonsterCreater : MonoBehaviour
 
     [SerializeField] private float batchInterval = 0.1f;
 
+    public int MonsterCount = 0;
     // 统一管理生成状态
     private class MonsterSpawnData
     {
@@ -54,6 +55,7 @@ public class MonsterCreater : MonoBehaviour
     /// </summary>
     public void CreateMonster(GameObject monsterPrefab, int count,string type, int batchSize)
     {
+        MonsterCount += count;
         if (!spawnDataDict.ContainsKey(monsterPrefab))
         {
             spawnDataDict[monsterPrefab] = new MonsterSpawnData(type, batchSize);
@@ -62,7 +64,19 @@ public class MonsterCreater : MonoBehaviour
         MonsterSpawnData data = spawnDataDict[monsterPrefab];
         if (count <= 1)
         {
-            InstantiateSingleMonster(monsterPrefab, OnGetCreatePos(data));
+            GameObject obj =InstantiateSingleMonster(monsterPrefab, OnGetCreatePos(data));
+            switch (data.type)
+            {
+                case "FlyKoopa":
+                    float hight = Random.Range(0.27f, 7);
+                    obj.GetComponent<FlyKoopa>().originalY = hight;
+                    break;
+                case "flyFish":
+                    float maxHight = Random.Range(2, 8);
+                    obj.GetComponent<FlyFish>().maxHeight = maxHight;
+                    break;
+            }
+            MonsterCount -= 1;
         }
         else
         {
@@ -100,6 +114,7 @@ public class MonsterCreater : MonoBehaviour
                         obj.GetComponent<FlyFish>().maxHeight = maxHight;
                         break;
                 }
+                MonsterCount -= 1;
             }
 
             data.count -= spawnCount;
@@ -140,12 +155,4 @@ public class MonsterCreater : MonoBehaviour
     public void OnCreateFlyFish(int count) => CreateMonster(flyFish, count, "flyFish", 1);
     public void OnCreateBeatles(int count) => CreateMonster(Beatles, count, "Beatles", 1);
 
-    /// <summary>
-    /// 添加新怪物类型
-    /// </summary>
-    public void AddMonsterType(GameObject newMonsterPrefab, string methodName = null)
-    {
-        // 可以通过反射动态添加方法，或通过事件系统
-        Debug.Log($"添加了新怪物类型: {newMonsterPrefab.name}");
-    }
 }

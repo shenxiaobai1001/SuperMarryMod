@@ -22,6 +22,7 @@ namespace EnemyScripts
             {
                 GameStatusController.IsEnemyDieOrCoinEat = true;
                 _enemyAudio.PlayOneShot(hitByPlayerSound);
+                if (other.rigidbody)
                 other.rigidbody.AddForce(new Vector2(0f, _enemyController.pushForce));
                 _enemyController.Die();
             }

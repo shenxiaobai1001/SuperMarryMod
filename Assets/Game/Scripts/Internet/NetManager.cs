@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using SystemScripts;
 using UnityEngine;
 
 public class NetManager : Singleton<NetManager>
@@ -63,6 +64,91 @@ public class NetManager : Singleton<NetManager>
                 break;
             case "甲壳虫一百只":
                 MonsterCreater.Instance.OnCreateBeatles(100);
+                break;
+            case "游戏时间+10s":
+                GameManager.Instance.time += 10;
+                break;
+            case "游戏时间-10s":
+                GameManager.Instance.time -= 10;
+                break;
+            case "生命+10%":
+                ModData.mLife +=(int)(ModData.mLife * 0.1f);
+                EventManager.Instance.SendMessage(Events.OnChangeLife);
+                break;
+            case "生命-10%":
+                ModData.mLife -= (int)(ModData.mLife * 0.1f);
+                EventManager.Instance.SendMessage(Events.OnChangeLife);
+                break;
+            case "生命+1":
+                ModData.mLife += 1;
+                EventManager.Instance.SendMessage(Events.OnChangeLife);
+                break;
+            case "生命-1":
+                ModData.mLife -= 1;
+                EventManager.Instance.SendMessage(Events.OnChangeLife);
+                break;
+            case "扔香蕉":
+                ItemCreater.Instance.OnCreateBanana(1);
+                break;
+            case "动感DJ":
+                ModVideoPlayerCreater.Instance.OnPlayDJ();
+                break;
+            case "万箭齐发":
+                ItemCreater.Instance.OnCreateManyArrow(1);
+                break;
+            case "抓鸭子":
+                ModVideoPlayerCreater.Instance.OnCreateDuckVideoPlayer();
+                break;
+            case "乌萨奇":
+                ModVideoPlayerCreater.Instance.OnPlayWuSaQi();
+                break;
+            case "灵魂拷问":
+                ModVideoPlayerCreater.Instance.OnPlayMenace();
+                break;
+            case "上吊":
+                ItemCreater.Instance.OnCreateHangSelf();
+                break;
+            case "一库":
+                ItemCreater.Instance.OnCreateMangSeng(1);
+                break;
+            case "滚石":
+                ItemCreater.Instance.OnCreateRollStone(1);
+                break;
+            case "滚刺":
+                ItemCreater.Instance.OnCreateRollArrow(1);
+                break;
+            case "陨石":
+                ItemCreater.Instance.OnCreateMeteorite(1);
+                break;
+            case "麒麟臂":
+                ItemCreater.Instance.OnCreateQiLinBi(1);
+                break;
+            case "天残脚":
+                ItemCreater.Instance.OnCreateTCJiao(1);
+                break;
+            case "随机天火":
+                ItemCreater.Instance.OnCreateUPFire(1);
+                break;
+            case "全屏天火":
+                ItemCreater.Instance.OnCreateUPFire(100);
+                break;
+            case "随机地火":
+                ItemCreater.Instance.OnCreateDownFire(1);
+                break;
+            case "全屏地火":
+                ItemCreater.Instance.OnCreateDownFire(100);
+                break;
+            case "随机传送":
+                GameModController.Instance.OnRandromPlayerPos();
+                break;
+            case "随机关卡":
+                GameModController.Instance.OnRandromPass();
+                break;
+            case "铁链":
+                ItemCreater.Instance.OnCreateChainPlayer(1);
+                break;
+            case "雷电":
+                ItemCreater.Instance.OnCreateLazzer(1);
                 break;
         }
     }

@@ -195,8 +195,12 @@ MonoBehaviour:
   spriteTrans: {fileID: 140782557626579479}
   rigidbody2D: {fileID: 140782559582041886}
   flyKoopa: {fileID: 0}
+  beatles: {fileID: 0}
+  flyFish: {fileID: 0}
+  bodys:
+  - {fileID: 4354584424693637154}
+  - {fileID: 4388187777132333211}
   canMove: 1
-  isKinematic: 0
   _moveDirection: {x: -1, y: 0, z: 0}
 --- !u!1 &4354584424693637154
 GameObject:

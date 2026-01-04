@@ -19,9 +19,9 @@ namespace PlayerScripts
         public bool isDead;
         private bool _isOnGround;
         private bool _isEatable;
-        private bool _isFinish;
+        [HideInInspector] public bool _isFinish;
         private bool _isNotHugPole;
-        private bool _isFacingRight;
+        [HideInInspector]public bool _isFacingRight;
         private bool _isGoingDownPipeAble;
         private bool _isAboveSpecialPipe;
         public bool isWalkingToCastle;
@@ -44,7 +44,7 @@ namespace PlayerScripts
         public GameObject fireBallPrefab;
         public Transform fireBallParent;
         private Animator _playerAnim;
-        private Rigidbody2D _playerRb;
+        [HideInInspector] public Rigidbody2D _playerRb;
         private AudioSource _playerAudio;
 
         [Header("AudioClip Settings")] public AudioClip jumpSound;
@@ -58,6 +58,8 @@ namespace PlayerScripts
         public AudioClip kickSound;
         public AudioClip endGameSound;
         public AudioClip fireballSound;
+
+        [HideInInspector]public bool isHit = false;
 
         private static readonly int IdleB = Animator.StringToHash("Idle_b");
         private static readonly int WalkB = Animator.StringToHash("Walk_b");
@@ -102,6 +104,7 @@ namespace PlayerScripts
 
         private void Update()
         {
+            if (isHit) return;
             if (!isDead && !_isFinish && !GameStatusController.IsGameFinish)
             {
                 // 修改1：J键 - 攻击/加速
@@ -142,8 +145,15 @@ namespace PlayerScripts
                     transform.Translate(slideDownSpeed / 2.5f * Time.deltaTime * Vector3.down);
                 }
             }
+            if (transform.position.y <= -2 && checkYpos) {
+                checkYpos = false;
+                GameStatusController.IsDead = true;
+                isRest = true;
+                OnDieFunc();
+            }
         }
-
+        bool isRest = false;
+        bool checkYpos = true;
         // 新增方法：处理J键输入（攻击/加速）
         private void HandleJKeyInput()
         {
@@ -173,9 +183,9 @@ namespace PlayerScripts
         private void HandleSKeyInput()
         {
             // S键按下：下蹲或进入管道
-            if (Input.GetKeyDown(KeyCode.S) && _isAboveSpecialPipe)
+            if (Input.GetKeyDown(KeyCode.S) && _isAboveSpecialPipe|| Input.GetKeyDown(KeyCode.S) && isHidden)
             {
-                _isAboveSpecialPipe = false;
+                PlayerModController.Instance.OnChangeStateFalse();
                 _playerAudio.PlayOneShot(pipeSound);
                 _isGoingDownPipeAble = true;
                 _playerRb.velocity = Vector2.zero;
@@ -211,15 +221,16 @@ namespace PlayerScripts
 
         private void FixedUpdate()
         {
+            if (isHit) return;
             if (GameStatusController.IsGameFinish)
             {
                 transform.Translate(slideDownSpeed / 1.25f * Time.deltaTime * Vector3.right);
-                if (Input.GetKeyDown(KeyCode.Backspace))
-                {
-                    GameStatusController.IsGameFinish = false;
-                    GameStatusController.IsShowMessage = false;
-                    SceneManager.LoadScene(0);
-                }
+                //if (Input.GetKeyDown(KeyCode.Backspace))
+                //{
+                //    GameStatusController.IsGameFinish = false;
+                //    GameStatusController.IsShowMessage = false;
+                //    SceneManager.LoadScene(0);
+                //}
             }
 
             if (Mathf.RoundToInt(transform.position.x) == 285)
@@ -247,6 +258,7 @@ namespace PlayerScripts
 
             if (isDead)
             {
+                checkYpos = false;
                 Die();
             }
             else if (!isDead && !_isFinish && !GameStatusController.IsGameFinish)
@@ -291,15 +303,50 @@ namespace PlayerScripts
         {
             if (!_isCrouching && !_isGoingDownPipeAble)
             {
-                // 修改：使用AD键获取水平输入
                 float horizontalInput = 0f;
                 if (Input.GetKey(KeyCode.A)) horizontalInput = -1f;
                 if (Input.GetKey(KeyCode.D)) horizontalInput = 1f;
 
+                // 调试1：检查输入
+                //Debug.Log($"水平输入: {horizontalInput}");
+
+                // 调试2：检查速度和参数
+                //Debug.Log($"速度值: {speed}, 固定时间: {Time.fixedDeltaTime}");
+
                 Vector2 playerVelocity = _playerRb.velocity;
+
+                // 调试3：检查当前速度
+                //Debug.Log($"当前速度: {playerVelocity}");
+
+                // 调试4：计算并检查目标速度
+                float calculatedSpeed = horizontalInput * speed * Time.fixedDeltaTime;
+                //Debug.Log($"计算出的目标速度分量: {calculatedSpeed}");
+
                 Vector3 targetVelocity = new Vector2(horizontalInput * speed * Time.fixedDeltaTime, playerVelocity.y);
+
+                // 调试5：检查SmoothDamp的引用速度
+                //Debug.Log($"SmoothDamp引用速度前: {_velocity}");
+
                 _playerRb.velocity = Vector3.SmoothDamp(playerVelocity, targetVelocity, ref _velocity, smoothTime);
+
+                // 调试6：检查SmoothDamp后的引用速度
+                //Debug.Log($"SmoothDamp引用速度后: {_velocity}");
+
+                // 调试7：检查最终应用的速度
+                //Debug.Log($"应用后的速度: {_playerRb.velocity}");
             }
+            //if (!_isCrouching && !_isGoingDownPipeAble)
+            //{
+            //    // 修改：使用AD键获取水平输入
+            //    float horizontalInput = 0f;
+            //    if (Input.GetKey(KeyCode.A)) horizontalInput = -1f;
+            //    if (Input.GetKey(KeyCode.D)) horizontalInput = 1f;
+
+            //    Vector2 playerVelocity = _playerRb.velocity;
+            //    Vector3 targetVelocity = new Vector2(horizontalInput * speed * Time.fixedDeltaTime, playerVelocity.y);
+            //    _playerRb.velocity = Vector3.SmoothDamp(playerVelocity, targetVelocity, ref _velocity, smoothTime);
+            //    PFunc.Log(_playerRb.velocity, horizontalInput, speed);
+            //}
 
             // 修改：使用S键下蹲
             if (_isCrouching && (CompareTag("BigPlayer") || CompareTag("UltimateBigPlayer")) && !_isAboveSpecialPipe)
@@ -316,9 +363,38 @@ namespace PlayerScripts
             }
         }
 
-        // 以下方法保持不变...
         private void OnCollisionEnter2D(Collision2D other)
         {
+            if (other.gameObject.CompareTag("EnemyBody"))
+            {
+                if (!GameStatusController.IsBigPlayer)
+                {
+                    // StartCoroutine(Die(other.gameObject));
+                    PFunc.Log("OnCollisionEnter2D", isInvulnerable);
+                    if (!isInvulnerable)
+                    {
+                        Sound.PlaySound("smb_mariodie");
+                        GameStatusController.IsDead = true;
+                        GameStatusController.Live -= 1;
+                        _playerRb.isKinematic = true;
+                        _playerRb.velocity = Vector2.zero;
+                    }
+                    else
+                    {
+                        Physics2D.IgnoreCollision(GetComponent<Collider2D>(),smallPlayerCollider.GetComponent<Collider2D>());
+                    }
+                }
+                else if (GameStatusController.IsBigPlayer)
+                {
+                    GameStatusController.IsBigPlayer = false;
+                    GameStatusController.IsFirePlayer = false;
+                    GameStatusController.PlayerTag = "Player";
+                    gameObject.tag = GameStatusController.PlayerTag;
+                    ChangeAnim();
+                    isInvulnerable = true;
+                }
+                return;
+            }
             if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Pipe") ||
                 other.gameObject.CompareTag("Brick") || other.gameObject.CompareTag("Stone") ||
                 other.gameObject.CompareTag("SpecialPipe"))
@@ -336,6 +412,7 @@ namespace PlayerScripts
 
             if (other.gameObject.CompareTag("Pole"))
             {
+                Config.isLoading = true;
                 _playerAudio.PlayOneShot(flagPoleSound);
                 _flagPos = other.gameObject.transform.position.x;
                 _isFinish = true;
@@ -431,7 +508,7 @@ namespace PlayerScripts
                 _isEatable = true;
             }
         }
-
+        public bool isHidden = false;
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("Princess"))
@@ -455,6 +532,23 @@ namespace PlayerScripts
             {
                 _playerAudio.PlayOneShot(coinSound);
             }
+            if (other.gameObject.CompareTag("Hidden"))
+            {
+           
+                isHidden = true;
+            }
+            if (other.gameObject.CompareTag("outHidden"))
+            {
+                StartCoroutine(OutHiddenPass());
+            }
+            
+        }
+        private void OnTriggerExit2D(Collider2D collision)
+        {
+            if (collision.gameObject.CompareTag("Hidden")&&! _isGoingDownPipeAble)
+            {
+                isHidden = false;
+            }
         }
 
         private void TurnIntoBigPlayer()
@@ -468,17 +562,30 @@ namespace PlayerScripts
             {
                 tag = "UltimateBigPlayer";
             }
-
+  
             GameStatusController.IsBigPlayer = true;
+            PFunc.Log("TurnIntoBigPlayer", GameStatusController.IsBigPlayer);
             ChangeAnim();
         }
-
+        Vector3 deadPos=Vector3.zero;
         private void Die()
         {
-            _playerAnim.SetBool(DieB, isDead);
+            //playerCol.SetActive(false);
+            //_playerRb.isKinematic = true;
+            //_playerAnim.SetBool(DieB, isDead);
             GameStatusController.IsDead = true;
-            StartCoroutine(DieAnim());
-            StartCoroutine(LoadingScene());
+            OnDieFunc();
+        }
+        Coroutine DieCoroutine = null;
+        void OnDieFunc()
+        {
+            if (DieCoroutine==null)
+            {
+                PlayerModController.Instance.OnSetPlayerIns(false);
+                PlayerModController.Instance.OnChangeState(false);
+                deadPos =isRest?new Vector3(-2,0): transform.position;
+                DieCoroutine = StartCoroutine(DieAnim());
+            }
         }
 
         private void GetPlayerSpeed()
@@ -523,18 +630,41 @@ namespace PlayerScripts
             yield return new WaitForSeconds(1.5f);
             _isNotHugPole = true;
         }
-
+        public PlayerBreak playerBreak;
         private IEnumerator DieAnim()
         {
-            yield return new WaitForSeconds(1);
             playerCol.SetActive(false);
-            _playerRb.isKinematic = false;
+            playerBreak.gameObject.SetActive(true);
+            yield return playerBreak.OnAddAllForceIE();
+            ModData.mLife--;
+            if (isRest|| ModData.mLife <= 0)
+            {
+               yield return StartCoroutine(LoadingScene());
+            }
+            else
+            {
+                yield return playerBreak.OnHuifuIE();
+                GameStatusController.IsDead = false;
+            }
+            ResetPlayerState(deadPos);
+            DieCoroutine = null;
         }
 
         private static IEnumerator LoadingScene()
         {
-            yield return new WaitForSeconds(3.5f);
-            SceneManager.LoadScene(1);
+            yield return new WaitForSeconds(0.1f);
+            if (ModData.mLife <= 0)
+            {
+                yield return ModController.Instance.OnDequeueObjs();
+                ModData.mLife = 3;
+                Loaded.OnLoadScence("LoadingScene");
+            }
+            else
+            {
+                string passName= GameModController.Instance.nowPos;
+                GameModController.Instance.OnLoadScene(passName);
+            }
+
         }
 
         private IEnumerator PlayStageClearSound()
@@ -564,8 +694,192 @@ namespace PlayerScripts
         {
             yield return new WaitForSeconds(1.5f);
             _isGoingDownPipeAble = false;
-            SceneManager.LoadScene(GameStatusController.CurrentLevel);
-            GameStatusController.CurrentLevel += 1;
+            PFunc.Log("StopGoingDownPipe", _isAboveSpecialPipe, isHidden);
+            if (_isAboveSpecialPipe)
+            {
+                _isAboveSpecialPipe = false;
+                Loaded.OnLoadScence("Excessive");
+            }
+            else if(isHidden)
+            {
+                GameStatusController.IsHidden = true;
+                GameStatusController. HiddenMove = Config.passIndex!=0;
+                 isHidden = false;
+                transform.position = GameManager.Instance.hiddenEnterPos.position;
+                Camera.main.transform.position = new Vector3(0, 37, -10);
+                PlayerModController.Instance.OnChangeStateFalse();
+            }
+        }
+        private IEnumerator OutHiddenPass()
+        {
+            _playerAudio.PlayOneShot(pipeSound);
+            PlayerModController.Instance.OnChangeStateTrue();
+            float allTime = 1f;
+            float time = 0;
+            while (time< allTime) {
+                transform.Translate(Vector2.right * 1 * Time.deltaTime);
+                time += Time.deltaTime;
+                yield return null;
+            }
+            GameStatusController.IsHidden = false;
+            GameStatusController.HiddenMove =false;
+            isHidden = false;
+            transform.position = GameManager.Instance.hiddenOutPos.position;
+            PlayerModController.Instance.OnChangeStateFalse();
+        }
+        // 在PlayerController类中添加以下方法
+        public void ResetPlayerState(Vector3? startPosition = null)
+        {
+            checkYpos = true;
+            // 1. 停止所有正在运行的协程
+            StopAllCoroutines();
+            isRest = false;
+            // 2. 重置核心状态变量
+            isDead = false;
+            isHit = false;
+            _isOnGround = true;
+            _isEatable = false;
+            _isFinish = false;
+            _isNotHugPole = false;
+            _isFacingRight = true;
+            _isGoingDownPipeAble = false;
+            _isAboveSpecialPipe = false;
+            isWalkingToCastle = false;
+            isInCastle = false;
+            isStopTime = false;
+            isInvulnerable = false;
+            isInvincible = false;
+
+            // 重置输入状态变量
+            _isSprinting = false;
+            _isCrouching = false;
+
+            // 重置速度相关变量
+            speed = 410f;
+            slideDownSpeed = 410f;
+            jumpForce = 795f;
+
+    
+            // 确保面向右侧
+            transform.rotation = Quaternion.identity;
+            transform.localScale = Vector3.one;
+            if (!_isFacingRight)
+            {
+                transform.Rotate(0, 180, 0);
+            }
+            _isFacingRight = true;
+
+            // 4. 重置物理组件
+            if (_playerRb != null)
+            {
+                _playerRb.velocity = Vector2.zero;
+                _playerRb.angularVelocity = 0f;
+                _playerRb.isKinematic = false;
+                _playerRb.simulated = true;
+            }                  
+            // 6. 重置碰撞体和游戏对象状态
+            playerSprite.SetActive(true);
+            playerCol.SetActive(true);
+            // 3. 重置位置和旋转
+            if (startPosition.HasValue)
+            {
+                transform.position = startPosition.Value;
+                PFunc.Log("重置玩家状态",   transform.position);
+            }
+
+
+            //// 5. 重置动画状态
+            //if (_playerAnim != null)
+            //{
+            //    // 重置所有bool参数
+            //    _playerAnim.SetBool(IdleB, true);
+            //    _playerAnim.SetBool(WalkB, true);
+            //    _playerAnim.SetBool(RunB, true);
+            //    _playerAnim.SetBool(DieB, false);
+            //    _playerAnim.SetBool(BigB, false);
+            //    _playerAnim.SetBool(HugB, false);
+            //    _playerAnim.SetBool(UltimateB, false);
+            //    _playerAnim.SetBool(CrouchB, false);
+            //    _playerAnim.SetBool(VulnerableB, false);
+            //    _playerAnim.SetBool(FireB, false);
+
+            //    // 重置其他参数
+            //    _playerAnim.SetFloat(SpeedF, 0f);
+            //    _playerAnim.SetFloat(UltimateDurationF, 0f);
+
+            //    // 重置触发器（需要特殊处理，可以记录并重置）
+            //    _playerAnim.ResetTrigger(JumpTrig);
+
+            //    // 强制重置动画状态
+            //    _playerAnim.Play("Idle", 0, 0f);
+            //}
+            if (_playerAnim)
+            {
+                _playerAnim.Rebind();
+                _playerAnim.Update(0f);
+            }
+
+            // 根据当前标签设置正确的碰撞体
+            if (GameStatusController.PlayerTag != null)
+            {
+                tag = GameStatusController.PlayerTag;
+            }
+
+            // 根据标签激活/停用大小玩家碰撞体
+            if (CompareTag("Player") || CompareTag("UltimatePlayer"))
+            {
+                smallPlayerCollider.SetActive(true);
+                bigPlayerCollider.SetActive(false);
+                smallPlayer.SetActive(true);
+                bigPlayer.SetActive(false);
+            }
+            else if (CompareTag("BigPlayer") || CompareTag("UltimateBigPlayer"))
+            {
+                smallPlayerCollider.SetActive(false);
+                bigPlayerCollider.SetActive(true);
+                smallPlayer.SetActive(false);
+                bigPlayer.SetActive(true);
+            }
+
+            // 7. 重置层碰撞
+            Physics2D.IgnoreLayerCollision(8, 9, false);
+
+            // 8. 重置计时器
+            _startInvincible = 0f;
+            _invincibleTime = 0f;
+
+            // 9. 重置音频（如果需要）
+            if (_playerAudio != null && _playerAudio.isPlaying)
+            {
+                _playerAudio.Stop();
+            }
+
+            // 10. 重置速度插值
+            _velocity = Vector3.zero;
+
+            // 11. 重置全局状态（如果这些是玩家相关的状态）
+            // 注意：这些可能会在全局状态控制器中处理
+            GameStatusController.IsDead = false;
+            GameStatusController.IsBigPlayer = false;
+            GameStatusController.IsFirePlayer = false;
+            GameStatusController.IsGameFinish = false;
+            GameStatusController.IsStageClear = false;
+            GameStatusController.IsShowMessage = false;
+            GameStatusController.IsBossBattle = false;
+
+            // 12. 设置玩家标签为初始状态
+            GameStatusController.PlayerTag = "Player";
+            tag = "Player";
+            PlayerModController.Instance.OnChangeState(true);
+            PlayerModController.Instance.OnSetPlayerIns(true);
+            // 13. 启用脚本（如果被禁用）
+            enabled = true;
+        }
+
+        // 可选：添加一个重载方法，使用默认位置
+        public void ResetPlayerState()
+        {
+            ResetPlayerState(Vector3.zero);
         }
     }
 }

@@ -18,8 +18,12 @@ namespace Game.Scripts.Main
 
         //主体资源包
         public static ResourcePackage MainPackage = null;
-
+        //主体资源包
+        public static ResourcePackage VideoPackage = null;
         //默认包名
+        public static string mainPackageName = "DefaultPackage";
+        public static string videoPackageName = "VideoPackage";
+
         public static string packageName = "DefaultPackage";
 
         /// <summary> YooAsset运行模式</summary>
@@ -29,23 +33,38 @@ namespace Game.Scripts.Main
         static public string UpdateResUrl = "";
         public static string packageVersion = "";
         private void Awake()
-        {
-            StartCoroutine(Init());
+        { // 必须关闭垂直同步
+            QualitySettings.vSyncCount = 0;  // 关键！必须先设置这个
+            // 设置目标帧率
+            Application.targetFrameRate = 144;
+            StartCoroutine(OnInitPackage());
         }
+
+        IEnumerator OnInitPackage()
+        {
+            packageName = mainPackageName;
+            yield return Init(packageName);
+            packageName = videoPackageName;
+            yield return Init(packageName);
+            yield return OnStartLoadInitScene();
+        }
+
+
         /// <summary>初始化YooAsset》设置运行模式》检查资源版本》下载资源 </summary>
-        public static IEnumerator Init(bool directDownload = true)
+        public static IEnumerator Init(string initpackage)
         {
             if (!YooAssets.Initialized)
             {
-                // 初始化资源系统
+                // 初始化资源系统.
                 YooAssets.Initialize();
             }
 
             // 创建默认的资源包
-            package = YooAssets.TryGetPackage(packageName);
+            package = YooAssets.TryGetPackage(initpackage);
             if (package == null)
-                package = YooAssets.CreatePackage(packageName);
+                package = YooAssets.CreatePackage(initpackage);
 
+            Debug.Log("开始初始化资源包=" + package.PackageName);
             // 设置该资源包为默认的资源包，可以使用YooAssets相关加载接口加载该资源包内容。
             YooAssets.SetDefaultPackage(package);
 
@@ -66,8 +85,6 @@ namespace Game.Scripts.Main
                     yield return UpdatePackageManifest(); //获取资源包清单
                     break;
             }
-
-            yield return OnStartLoadInitScene();
         }
         public static IEnumerator YooBuildByEditorSimulateMode()
         {
@@ -125,7 +142,16 @@ namespace Game.Scripts.Main
 
             if (operation.Status == EOperationStatus.Succeed)
             {
-                MainPackage = package;
+                switch (packageName)
+                {
+                    case "DefaultPackage":
+                        MainPackage = package;
+                        break;
+                    case "VideoPackage":
+                        VideoPackage = package;
+                        break;
+                }
+
             }
             else
             {
@@ -136,7 +162,7 @@ namespace Game.Scripts.Main
         public static IEnumerator OnStartLoadInitScene()
         {
             Debug.Log("开始加载场景====" + YooUpdateManager.MainPackage);
-            var location = "Assets/Game/Scenes/simple";
+            var location = "Assets/Game/Scenes/StartingScene";
             var sceneMode = LoadSceneMode.Single;
             var physicsMode = LocalPhysicsMode.None;
             var suspendLoad = false;

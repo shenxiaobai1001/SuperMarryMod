@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6592935370594555118}
   - component: {fileID: 5270678140144479657}
   - component: {fileID: 8185276312091281736}
+  - component: {fileID: 3665644592821326757}
   m_Layer: 0
   m_Name: Piece4
   m_TagString: Ground
@@ -130,6 +131,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.4, y: 0.4}
   m_EdgeRadius: 0
+--- !u!114 &3665644592821326757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1834903515921007505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b394e0c51accb641a5a0f13b7f8294b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pieceType: 1
+  initialSpeed: 8
+  gravity: 9.8
+  horizontalVelocity: 4
 --- !u!1 &2192369952263403577
 GameObject:
   m_ObjectHideFlags: 0
@@ -141,6 +158,7 @@ GameObject:
   - component: {fileID: 3268516078871563148}
   - component: {fileID: 1709195956667338196}
   - component: {fileID: 8462611861905219375}
+  - component: {fileID: 1800166002292481475}
   m_Layer: 0
   m_Name: Piece3
   m_TagString: Ground
@@ -260,6 +278,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.4, y: 0.4}
   m_EdgeRadius: 0
+--- !u!114 &1800166002292481475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2192369952263403577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b394e0c51accb641a5a0f13b7f8294b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pieceType: 0
+  initialSpeed: 8
+  gravity: 9.8
+  horizontalVelocity: 4
 --- !u!1 &2448285617568399987
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,6 +304,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1248777447174582466}
   - component: {fileID: 4549141038050531686}
+  - component: {fileID: 9058028302730141223}
   m_Layer: 0
   m_Name: GreenTreetBrick
   m_TagString: Ground
@@ -336,8 +371,26 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.1, y: 1}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &9058028302730141223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2448285617568399987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ea0ada8cff6e2347988046757a32856, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boxCollider2Ds:
+  - {fileID: 4888989209974730598}
+  - {fileID: 6493454820023818425}
+  - {fileID: 8462611861905219375}
+  - {fileID: 8185276312091281736}
+  collider2D: {fileID: 4549141038050531686}
 --- !u!1 &4004115976393204431
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,6 +402,7 @@ GameObject:
   - component: {fileID: 459360453301243796}
   - component: {fileID: 4511787510677127056}
   - component: {fileID: 6493454820023818425}
+  - component: {fileID: 4494158907808033919}
   m_Layer: 0
   m_Name: Piece2
   m_TagString: Ground
@@ -468,6 +522,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.4, y: 0.4}
   m_EdgeRadius: 0
+--- !u!114 &4494158907808033919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4004115976393204431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b394e0c51accb641a5a0f13b7f8294b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pieceType: 1
+  initialSpeed: 8
+  gravity: 9.8
+  horizontalVelocity: 4
 --- !u!1 &4874368788458425856
 GameObject:
   m_ObjectHideFlags: 0
@@ -514,6 +584,7 @@ GameObject:
   - component: {fileID: 2670716745400000852}
   - component: {fileID: 1294398115574185599}
   - component: {fileID: 4888989209974730598}
+  - component: {fileID: 4624367787629048807}
   m_Layer: 0
   m_Name: Piece1
   m_TagString: Ground
@@ -633,3 +704,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.4, y: 0.4}
   m_EdgeRadius: 0
+--- !u!114 &4624367787629048807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8869414105729764495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b394e0c51accb641a5a0f13b7f8294b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pieceType: 0
+  initialSpeed: 8
+  gravity: 9.8
+  horizontalVelocity: 4

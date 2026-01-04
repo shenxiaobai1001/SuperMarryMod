@@ -10,6 +10,7 @@ namespace SystemScripts
 {
     public class GameManager : MonoBehaviour
     {
+        public static GameManager Instance;
         public PlayerController player;
         public GameStatusController gameStatusController;
         public List<EnemyController> enemyControllers;
@@ -17,6 +18,8 @@ namespace SystemScripts
         public GameObject stairwayPrefab;
         public Transform stairwayDownParent;
         public Transform stairwayUpParent;
+        public Transform hiddenEnterPos;
+        public Transform hiddenOutPos;
         public bool isStairLevel;
 
         public float time = 400;
@@ -24,6 +27,15 @@ namespace SystemScripts
 
         private void Awake()
         {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
             if (isStairLevel)
             {
                 InvokeRepeating(nameof(SpawnStairway), 0, 3);
@@ -37,9 +49,16 @@ namespace SystemScripts
 
         private void Update()
         {
+            if (player == null)
+            {
+                if (PlayerController.Instance!=null)
+                {
+                    player = PlayerController.Instance;
+                }
+            }
             if (player != null)
             {
-                StopEnemiesFromMovingWhenPlayerDie();
+                //StopEnemiesFromMovingWhenPlayerDie();
                 SetActiveEnemiesWhenSeePlayer();
                 DestroyEnemiesOutOfBound();
                 UpdateTime();
@@ -97,7 +116,7 @@ namespace SystemScripts
                 {
                     if (enemyGameObjects[i].transform.position.x - player.transform.position.x < -15)
                     {
-                        Destroy(enemyGameObjects[i]);
+                        enemyGameObjects[i].SetActive(false);
                     }
                 }
                 else
@@ -193,7 +212,9 @@ namespace SystemScripts
         private static IEnumerator NextLevel()
         {
             yield return new WaitForSeconds(3);
-            SceneManager.LoadScene(1);
+            Config.passIndex++;
+            string name = Config.passName[Config.passIndex];
+            GameModController.Instance.OnLoadScene(name);
         }
 
         private IEnumerator DestroyStair(GameObject stair)

@@ -27,6 +27,7 @@ namespace EnemyScripts
         public FlyKoopa flyKoopa;
         public Beatles beatles;
         public FlyFish flyFish;
+        public List<GameObject> bodys;
         public bool canMove = true;
 
         bool isDead = false;
@@ -43,7 +44,7 @@ namespace EnemyScripts
             _enemyAnim = GetComponent<Animator>();
         }
 
-        private void Start()
+        private void OnEnable()
         {
             isCanMove = canMove;
             OnBeginMove();
@@ -51,6 +52,13 @@ namespace EnemyScripts
 
         public void OnBeginMove()
         {
+            if (bodys != null && bodys.Count > 0)
+            {
+                for (var i = 0; i < bodys.Count; i++)
+                {
+                    bodys[i].SetActive(true);
+                }
+            }
             rigidbody2D.isKinematic = isPatrolling;
             if (isPatrolling)
             {
@@ -83,6 +91,10 @@ namespace EnemyScripts
 
         private void Update()
         {
+            if (transform.position.y<-5&&!isDead)
+            {
+                Die();
+            }
             if (canMove)
                 Move();
         }
@@ -113,6 +125,14 @@ namespace EnemyScripts
             {
                 // 原模式：向左移动，碰撞时转向
                 transform.Translate(speed * Time.deltaTime * _moveDirection);
+            }
+        }
+
+        void OnChekYpos()
+        {
+            if (isDead)
+            {
+                return;
             }
         }
 
@@ -232,6 +252,13 @@ namespace EnemyScripts
 
         IEnumerator Destroy()
         {
+            if (bodys != null && bodys.Count > 0)
+            {
+                for (var i = 0; i < bodys.Count; i++)
+                {
+                    bodys[i].SetActive(false);
+                }
+            }
             spriteTrans.flipY = true;
             Vector3 dropDir = _moveDirection == Vector3.left ? new Vector3(4, 1, 0) : new Vector3(-4, 1, 0);
             rigidbody2D.AddForce(dropDir,ForceMode2D.Impulse);
