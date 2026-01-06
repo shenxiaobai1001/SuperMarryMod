@@ -29,7 +29,7 @@ namespace SystemScripts
             }
             if (player == null) return;
             if (player.transform.position.x <= 1.5f) return;
-            if (GameStatusController.IsHidden&&!GameStatusController.HiddenMove) return;
+            if (GameStatusController.IsHidden &&!GameStatusController.HiddenMove) return;
             float y = GameStatusController.IsHidden ? 32 : 5;
 
             transform.position = Vector3.Lerp(

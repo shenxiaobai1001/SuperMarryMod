@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.Analytics;
 
 /// <summary>配置</summary>
-public class Config
+public static class Config
 {
     public static bool isLoading=false;
     public static int ClearType=1;
@@ -16,7 +16,8 @@ public class Config
 public enum Events                                          
 {                                                                   
     None,                                                         
-    OnChangeLife,                                            
+    OnChangeLife,
+    OnModVideoPlayStart,
     OnModVideoPlayEnd,           
     OnLazzerHit,
 }                                                                  

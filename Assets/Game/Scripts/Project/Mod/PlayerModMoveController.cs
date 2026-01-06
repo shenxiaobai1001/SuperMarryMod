@@ -134,11 +134,14 @@ public class PlayerModMoveController : MonoBehaviour
             mainMoveCoroutine = null;
         }
     }
-
+    public void OnSetMinValue(float mx,float max)
+    {
+        minX = mx;
+        maxX = max;
+    }
     public void TriggerModMove(MoveType type, Vector3 dir, float speed = 5f, float time = 2f,
         bool canFight = true, bool rotate = false, int effectId = 0)
     {
-       
         if (ItemCreater.Instance != null && ItemCreater.Instance.isHang)
         {
             PlayerModController.Instance.OnCancelHangSelf();
@@ -361,7 +364,7 @@ public class PlayerModMoveController : MonoBehaviour
         // 边界限制
         newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
         newPosition.y = Mathf.Clamp(newPosition.y, minY, maxY);
-
+        PFunc.Log(newPosition);
         // 应用移动
         playerTransform.position = newPosition;
 

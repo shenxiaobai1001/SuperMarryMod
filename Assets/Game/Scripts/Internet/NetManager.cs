@@ -130,13 +130,13 @@ public class NetManager : Singleton<NetManager>
                 ItemCreater.Instance.OnCreateUPFire(1);
                 break;
             case "全屏天火":
-                ItemCreater.Instance.OnCreateUPFire(100);
+                ItemCreater.Instance.OnCreateUPFire(66);
                 break;
             case "随机地火":
                 ItemCreater.Instance.OnCreateDownFire(1);
                 break;
             case "全屏地火":
-                ItemCreater.Instance.OnCreateDownFire(100);
+                ItemCreater.Instance.OnCreateDownFire(66);
                 break;
             case "随机传送":
                 GameModController.Instance.OnRandromPlayerPos();

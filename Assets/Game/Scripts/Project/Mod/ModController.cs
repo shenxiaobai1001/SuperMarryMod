@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using SystemScripts;
 using UnityEngine;
 
 public class ModController : MonoBehaviour
@@ -21,12 +22,20 @@ public class ModController : MonoBehaviour
 
     public Transform MonsterParent;
     public Transform itemParent;
-
+    public GameStatusController statusController;
+    public UISystem uISystem;
     void Start()
     {
         DontDestroyOnLoad(gameObject);
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            uISystem.center.SetActive(true);
+        }
+    }
     public IEnumerator OnDequeueObjs()
     {
         if (MonsterParent.childCount > 0)

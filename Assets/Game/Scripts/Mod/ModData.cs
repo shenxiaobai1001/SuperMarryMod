@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class ModData 
 {
-  public static int mLife=3;
+  public static int mLife=30;
 }

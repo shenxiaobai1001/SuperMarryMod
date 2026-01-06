@@ -9,13 +9,11 @@ public class PlayerHitCheck : MonoBehaviour
     public PlayerController controller;
     private void OnCollisionEnter2D(Collision2D other)
     {
-        PFunc.Log("OnCollisionEnter2D", other.gameObject.tag);
         if (other.gameObject.CompareTag("EnemyBody"))
         {
             if (!GameStatusController.IsBigPlayer)
             {
                 // StartCoroutine(Die(other.gameObject));
-                PFunc.Log("OnCollisionEnter2D", controller.isInvulnerable);
                 if (!controller.isInvulnerable)
                 {
                     Sound.PlaySound("smb_mariodie");

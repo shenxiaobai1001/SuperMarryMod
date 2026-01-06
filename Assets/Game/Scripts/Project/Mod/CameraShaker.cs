@@ -38,7 +38,7 @@ public class CameraShaker : MonoBehaviour
     /// 开始震动摄像头
     /// </summary>
     /// <param name="customDuration">可选的自定义震动总时间</param>
-    public void StartShake(float customDuration = 0f)
+    public void StartShake(float customDuration = 0.2f)
     {
         // 如果已经有震动在进行，则延长震动时间
         if (isShaking)

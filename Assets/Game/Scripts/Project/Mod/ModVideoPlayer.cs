@@ -13,7 +13,6 @@ public class ModVideoPlayer : MonoBehaviour
     public GameObject normalPlayer;
     public GameObject specailPlayer;
 
-
     bool snakeScene = false;
     void Start()
     {
@@ -23,7 +22,7 @@ public class ModVideoPlayer : MonoBehaviour
 
     int videoType = 0;
     Vector3 scale = Vector3.one;
-    public void OnPlayVideo(Vector3 offset, Vector3 scale, Vector3 rotate, string path,int type, string layer = "Video", bool snake = false)
+    public void OnPlayVideo(Vector3 offset, Vector3 scale, Vector3 rotate, string path,int type, string layer = "Default", bool snake = false)
     {
         PFunc.Log("OnPlayVideo", path, layer);
         normalPlayer.SetActive(type==1);
@@ -36,7 +35,7 @@ public class ModVideoPlayer : MonoBehaviour
         pathTitle = path;
         snakeScene = snake;
         if (mCanvas) mCanvas.sortingLayerName = layer;  // Sorting Layer Ãû³Æ
-        if (mCanvas) mCanvas.sortingOrder = 1;         // Order in Laye
+        if (mCanvas) mCanvas.sortingOrder = -5;         // Order in Laye
         OnBeginGetVideo();
     }
 
@@ -72,7 +71,7 @@ public class ModVideoPlayer : MonoBehaviour
         Sound.PauseOrPlayVolumeMusic(true);
         mainPlayer.Play();
         mainPlayer.Control.SetVolume(Sound.VideoVolume);
-
+        EventManager.Instance.SendMessage(Events.OnModVideoPlayStart);
         //if (snakeScene)
         //{
         //    EventManager.Instance.SendMessage(Events.BeginSnakeMap, true);

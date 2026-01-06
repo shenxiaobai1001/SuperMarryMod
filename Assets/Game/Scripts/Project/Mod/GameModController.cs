@@ -65,7 +65,6 @@ public class GameModController : MonoBehaviour
         int value =UnityEngine.Random.Range(0, Config.passName.Length);
 
         string name = Config.passName[value];
-        Debug.Log("¼ÓÔØ³¡¾°£º" + name);
         if (mainMoveCoroutine==null)
         {
             Config.isLoading = true;
@@ -84,19 +83,27 @@ public class GameModController : MonoBehaviour
             mainMoveCoroutine = StartCoroutine(OnLoadScence(name));
         }
     }
+    public void OnLoadTargetScene(string name)
+    {
+        if (mainMoveCoroutine == null)
+        {
+            Config.isLoading = true;
+            mainMoveCoroutine = StartCoroutine(OnLoadScence(name));
+        }
+    }
 
     IEnumerator OnLoadScence(string name)
     {
         yield return Loaded.OnLoadScence(name);
         Scene scene = SceneManager.GetActiveScene();
-        yield return new WaitUntil(() => Config.passName.Contains(scene.name));
         yield return new WaitForSeconds(1);
-        Config.isLoading = false;
         mainMoveCoroutine = null;
         nowPos = name;
+        if (PlayerModMoveController.Instance != null)
+            PlayerModMoveController.Instance.OnSetMinValue(-5.5f, passDistance[nowPos]);
         //PlayerController.Instance.transform.position = new Vector3(-2, 0);
         Camera.main.transform.position = new Vector3(1.5f, 5,-10);
-        PFunc.Log("OnLoadScence",Camera.main.transform.position);
+        if(Config.passName.Contains(scene.name))
+             Config.isLoading = false;
     }
- 
 }

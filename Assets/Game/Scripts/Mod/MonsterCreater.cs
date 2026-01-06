@@ -97,11 +97,18 @@ public class MonsterCreater : MonoBehaviour
         while (data.count > 0)
         {
             int spawnCount = Mathf.Min(data.batchSize, data.count);
-
+            if (Config.isLoading)
+            {
+                yield return new WaitUntil(() => !Config.isLoading);
+            }
             for (int i = 0; i < spawnCount; i++)
             {
+                if (Config.isLoading)
+                {
+                    yield return new WaitUntil(() => !Config.isLoading);
+                }
                 Transform createPos = CreatePos1;
-                createPos=OnGetCreatePos(data);
+                createPos = OnGetCreatePos(data);
                 GameObject obj = InstantiateSingleMonster(monsterPrefab, createPos);
                 switch (data.type)
                 {

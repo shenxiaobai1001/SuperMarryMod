@@ -1,3 +1,4 @@
+using DG.Tweening;
 using PlayerScripts;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,17 +23,107 @@ public class ModVideoPlayerCreater : MonoBehaviour
 
     public GameObject ModVideoPlayer;
     public Transform videoParent;
-    public bool IsPlaying = false;
+    public bool IsPlaying = false; 
+    public GameObject InteractableObjects;
 
+    // 当前播放的视频编号和协程引用
+
+    private int currentVideoNumber;
+    private Coroutine beatCoroutine;
     private void Start()
     {
         EventManager.Instance.AddListener(Events.OnModVideoPlayEnd, OnVideoPlayEnd);
+        EventManager.Instance.AddListener(Events.OnModVideoPlayStart, OnModVideoPlayStart);
+        DJTimeLine.InitializeBeatMapData();
     }
+    bool isPlayDJ = false;
 
-    public void OnPlayDJ() 
+    public void OnPlayDJ()
     {
         int number = Random.Range(1, 13);
-        OnCreateModVideoPlayer(Vector3.zero, Vector3.one, Vector3.zero, $"DJ/{number}",1);
+        currentVideoNumber = number;
+        OnCreateModVideoPlayer(Vector3.zero, Vector3.one, Vector3.zero, $"DJ/{number}", 1);
+        isPlayDJ = true;
+
+    }
+
+    // 卡点震动协程
+    private IEnumerator BeatShakeCoroutine()
+    {
+        // 获取当前视频的卡点数据
+        if (!DJTimeLine.beatMapData.ContainsKey(currentVideoNumber))
+        {
+            Debug.LogWarning($"No beat map data found for video {currentVideoNumber}");
+            yield break;
+        }
+
+        List<float> beatTimes = DJTimeLine.beatMapData[currentVideoNumber];
+        beatTimes.Sort(); // 确保时间顺序
+
+        int currentBeatIndex = 0;
+        float startTime = 0;
+
+        while (currentBeatIndex < beatTimes.Count)
+        {
+            startTime += Time.deltaTime;
+            // 检查是否到达下一个卡点时间（考虑一定的误差范围）
+            if (currentBeatIndex < beatTimes.Count &&
+                startTime >= beatTimes[currentBeatIndex] - 0.02f)
+            {
+                // 触发摄像头震动
+                if (CameraShaker.Instance != null)
+                {
+                    SnakeObj();
+                    //CameraShaker.Instance.StartShake();
+                }
+                else
+                {
+                    Debug.LogWarning("CameraShaker.Instance is null!");
+                }
+
+                currentBeatIndex++;
+            }
+            yield return null;
+        }
+
+        Debug.Log($"Beat coroutine finished for video {currentVideoNumber}");
+    }
+    public void SnakeObj()
+    {
+        if (InteractableObjects == null)
+        {
+            InteractableObjects = GameObject.Find("InteractableObjects");
+        }
+        if (InteractableObjects != null)
+        {
+            InteractableObjects.transform.DOKill(); // 停止之前的震动避免叠加
+            InteractableObjects.transform.DOShakePosition( 0.1f, new Vector3(0,1,0) , 0, 0 );
+        }
+    }
+    // 修改现有的视频播放结束方法
+    void OnModVideoPlayStart(object msg)
+    {
+        if (isPlayDJ)
+        {
+            // 开始卡点协程
+            if (beatCoroutine != null)
+                StopCoroutine(beatCoroutine);
+            beatCoroutine = StartCoroutine(BeatShakeCoroutine());
+        }
+    }
+    // 修改现有的视频播放结束方法
+    void OnVideoPlayEnd(object msg)
+    {
+        IsPlaying = false;
+        isPlayDJ = false;
+        // 停止卡点协程
+        if (beatCoroutine != null)
+        {
+            StopCoroutine(beatCoroutine);
+            beatCoroutine = null;
+        }
+
+        PlayerModController.Instance.OnTriggerModAnimator("endMenace");
     }
     public void OnPlayWuSaQi()
     {
@@ -170,11 +261,6 @@ public class ModVideoPlayerCreater : MonoBehaviour
         IsPlaying = true;
     }
 
-    void OnVideoPlayEnd(object msg)
-    {
-        IsPlaying = false; 
-        PlayerModController.Instance.OnTriggerModAnimator("endMenace");
-    }
     private void OnDestroy()
     {
         EventManager.Instance.RemoveListener(Events.OnModVideoPlayEnd, OnVideoPlayEnd);

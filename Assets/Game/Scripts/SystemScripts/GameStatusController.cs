@@ -252,7 +252,7 @@ namespace SystemScripts
             {
                 StopCoroutine(currentLifeCoroutine);
             }
-            PFunc.Log("实时判断变化方向", mLife, ModData.mLife);
+
             // 启动新的协程处理生命值变化
             currentLifeCoroutine = StartCoroutine(ChangeLifeCoroutine());
 

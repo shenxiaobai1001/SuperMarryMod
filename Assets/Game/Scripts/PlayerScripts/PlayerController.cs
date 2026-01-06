@@ -656,8 +656,8 @@ namespace PlayerScripts
             if (ModData.mLife <= 0)
             {
                 yield return ModController.Instance.OnDequeueObjs();
-                ModData.mLife = 3;
-                Loaded.OnLoadScence("LoadingScene");
+                ModData.mLife = 30;
+                GameModController.Instance.OnLoadTargetScene("LoadingScene");
             }
             else
             {
@@ -714,17 +714,42 @@ namespace PlayerScripts
         {
             _playerAudio.PlayOneShot(pipeSound);
             PlayerModController.Instance.OnChangeStateTrue();
+
             float allTime = 1f;
             float time = 0;
-            while (time< allTime) {
+
+            // 第一部分：水平移动
+            while (time < allTime)
+            {
                 transform.Translate(Vector2.right * 1 * Time.deltaTime);
                 time += Time.deltaTime;
                 yield return null;
             }
-            GameStatusController.IsHidden = false;
-            GameStatusController.HiddenMove =false;
-            isHidden = false;
+
             transform.position = GameManager.Instance.hiddenOutPos.position;
+            GameStatusController.IsHidden = false;
+            GameStatusController.HiddenMove = false;
+
+            // 第二部分：向上移动（修改部分）
+            float addValue = GameStatusController.IsBigPlayer ? 2.5f : 2;
+            Vector3 startPos = transform.position;  // 记录起始位置
+            Vector3 targetPos = new Vector3(transform.position.x, transform.position.y + addValue, transform.position.z);
+
+            time = 0;  // 重置时间
+
+            while (time < allTime)
+            {
+                // 使用线性插值，time从0到1，t也从0到1
+                float t = time / allTime;  // 计算插值比例
+                transform.position = Vector3.Lerp(startPos, targetPos, t);
+                time += Time.deltaTime;
+                yield return null;
+            }
+
+            // 确保最终位置精确
+            transform.position = targetPos;
+
+            isHidden = false;
             PlayerModController.Instance.OnChangeStateFalse();
         }
         // 在PlayerController类中添加以下方法

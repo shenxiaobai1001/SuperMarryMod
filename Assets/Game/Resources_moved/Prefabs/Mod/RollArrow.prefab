@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 2322765412550088863}
   m_Layer: 0
   m_Name: 1
-  m_TagString: Banana
+  m_TagString: EnemyBody
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -279,7 +279,7 @@ GameObject:
   - component: {fileID: 1609471834851914644}
   m_Layer: 0
   m_Name: 2
-  m_TagString: Banana
+  m_TagString: EnemyBody
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

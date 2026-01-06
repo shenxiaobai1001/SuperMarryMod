@@ -69,7 +69,6 @@ public class ItemCreater : MonoBehaviour
     /// <summary>统一生成怪物方法 </summary>
     public void CreateItem(GameObject itemPrefab, int count, string type, int batchSize, float batchInterval=0.1f, Action<object> endAction = null)
     {
-  
         if (!spawnDataDict.ContainsKey(itemPrefab))
         {
             spawnDataDict[itemPrefab] = new ItemSpawnData(type, batchSize, batchInterval, endAction);
@@ -96,7 +95,6 @@ public class ItemCreater : MonoBehaviour
     private IEnumerator CreateItemBatch(GameObject monsterPrefab)
     {
         ItemSpawnData data = spawnDataDict[monsterPrefab];
-
         while (data.count > 0)
         {
             if (Config.isLoading)
@@ -104,9 +102,12 @@ public class ItemCreater : MonoBehaviour
                 yield return new WaitUntil(() => !Config.isLoading);
             }
             int spawnCount = Mathf.Min(data.batchSize, data.count);
-
             for (int i = 0; i < spawnCount; i++)
             {
+                if (Config.isLoading)
+                {
+                    yield return new WaitUntil(() => !Config.isLoading);
+                }
                 Vector3 createPos = CreatePos1.position;
                 createPos = OnGetCreatePos(data);
                 GameObject obj = InstantiateSingleMonster(monsterPrefab, createPos);
@@ -133,7 +134,7 @@ public class ItemCreater : MonoBehaviour
         {
             case "banana":
                 Sound.PlaySound("Mod/banana");
-                value = UnityEngine.Random.Range(-10, 10);
+                value = UnityEngine.Random.Range(-7, 7);
                 createPos = new Vector3(createPos.x + value, createPos.y, 0);
                 break;
             case "manyArrow":
@@ -154,7 +155,7 @@ public class ItemCreater : MonoBehaviour
                 createPos = new Vector3(x, 0, 0);
                 break;
             case "Meteorite":
-                value = UnityEngine.Random.Range(-10, 10);
+                value = UnityEngine.Random.Range(-7, 7);
                 createPos = new Vector3(createPos.x + value, createPos.y, 0);
                 break;
             case "QiLinBi":
@@ -166,11 +167,11 @@ public class ItemCreater : MonoBehaviour
                 createPos = vector;
                 break;
             case "UPFire":
-                value = UnityEngine.Random.Range(-10, 10);
+                value = UnityEngine.Random.Range(-7, 7);
                 createPos = new Vector3(createPos.x + value, createPos.y, 0);
                 break;
             case "DownFire":
-                value = UnityEngine.Random.Range(-10, 10);
+                value = UnityEngine.Random.Range(-7, 7);
                 createPos = new Vector3(vector.x + value, -5, 0);
                 break;
             case "chainPlayer":
