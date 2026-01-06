@@ -374,6 +374,7 @@ namespace PlayerScripts
 
             if (other.gameObject.CompareTag("Pole"))
             {
+                PFunc.Log();
                 ModController.Instance.OnModPause();
                 _playerAudio.PlayOneShot(flagPoleSound);
                 _flagPos = other.gameObject.transform.position.x;
@@ -596,8 +597,11 @@ namespace PlayerScripts
         private IEnumerator DieAnim()
         {
             playerCol.SetActive(false);
-            playerBreak.gameObject.SetActive(true);
-            yield return playerBreak.OnAddAllForceIE();
+            if (playerBreak)
+            {
+                playerBreak.gameObject.SetActive(true);
+                yield return playerBreak.OnAddAllForceIE();
+            }
             ModData.mLife--;
             if (isRest|| ModData.mLife <= 0)
             {

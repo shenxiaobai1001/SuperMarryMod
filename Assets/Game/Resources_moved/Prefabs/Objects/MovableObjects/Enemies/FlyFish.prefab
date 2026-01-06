@@ -128,6 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2363bb8acaf49ae4f88046130f4bb6b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flightDirection: 0
   flightSpeed: 10
   maxHeight: 8
   horizontalDistance: 20
@@ -137,6 +138,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  spriteRenderer: {fileID: 2521113792995861571}
   drawTrajectory: 1
   trajectoryColor: {r: 0, g: 1, b: 1, a: 1}
   enemyController: {fileID: 0}

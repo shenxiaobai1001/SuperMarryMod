@@ -14,7 +14,7 @@ public class PlayerBreak : MonoBehaviour
     public IEnumerator OnAddAllForceIE()
     {
         if (chipObj) chipObj.SetActive(true);
-        if (rigidbody2Ds == null) yield break;
+        if (rigidbody2Ds == null|| rigidbody2Ds.Count<=0) yield break;
         for (int i = 0; i < rigidbody2Ds.Count; i++) {
             int index = i;
             bool left = index % 2 == 0;

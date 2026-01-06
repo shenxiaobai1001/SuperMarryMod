@@ -15,8 +15,8 @@ public class GameObjFllow : MonoBehaviour
     {
         if (target == null)
         {
-            if (PlayerController.Instance != null)
-                target = PlayerController.Instance.transform;
+            if (Camera.main != null)
+                target = Camera.main.transform;
         }
         if (target == null)
         {
