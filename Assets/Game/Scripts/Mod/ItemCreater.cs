@@ -75,20 +75,14 @@ public class ItemCreater : MonoBehaviour
         }
 
         ItemSpawnData data = spawnDataDict[itemPrefab];
-        if (count <= 1)
+
+        data.count += count;
+        if (!data.isCreating)
         {
-           GameObject obj= InstantiateSingleMonster(itemPrefab, OnGetCreatePos(data));
-            OnCreateEnd(data, obj);
+            data.isCreating = true;
+            StartCoroutine(CreateItemBatch(itemPrefab));
         }
-        else
-        {
-            data.count += count;
-            if (!data.isCreating)
-            {
-                data.isCreating = true;
-                StartCoroutine(CreateItemBatch(itemPrefab));
-            }
-        }
+        
     }
 
     /// <summary> 批量生成协程</summary>

@@ -5,7 +5,7 @@ using UnityEngine.Analytics;
 /// <summary>配置</summary>
 public static class Config
 {
-    public static bool isLoading=false;
+    public static bool isLoading = true;
     public static int ClearType=1;
     public static string[] passName = new string[] { "1-1", "1-2", "1-3", "1-4", "2-1", "2-2", "2-3", "3-1", "3-2", "3-3", "3-4", "4-1", "4-2", "4-3" };
     public static int chainCount;
@@ -18,7 +18,7 @@ public enum Events
     None,                                                         
     OnChangeLife,
     OnModVideoPlayStart,
-    OnModVideoPlayEnd,           
+    OnModVideoPlayEnd, 
     OnLazzerHit,
 }                                                                  
 // 移动方向                                                 

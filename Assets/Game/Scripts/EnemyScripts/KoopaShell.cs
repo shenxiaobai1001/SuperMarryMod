@@ -21,6 +21,7 @@ namespace EnemyScripts
 
         private void Awake()
         {
+            _isPlayerKillable = false;
             _enemyAudio = GetComponent<AudioSource>();
         }
 

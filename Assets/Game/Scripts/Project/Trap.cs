@@ -74,6 +74,7 @@ public class Trap : MonoBehaviour
     // 碰撞检测
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (!ModData.mTrap)  return;
         if (!isTriggered && !isMoving && other.CompareTag("Player"))
         {
             TriggerTrap();
@@ -83,6 +84,7 @@ public class Trap : MonoBehaviour
     // 也可以使用Collision检测
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (!ModData.mTrap) return;
         if (!isTriggered && !isMoving && collision.gameObject.CompareTag("Player"))
         {
             TriggerTrap();

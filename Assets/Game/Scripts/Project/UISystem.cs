@@ -90,24 +90,25 @@ public class UISystem : MonoBehaviour
 
     void OnClickResolution()
     {
+        Sound.PlaySound("smb_coin");
         PFunc.Log("OnClickResolution", width, height);
         Screen.SetResolution( width,height, FullScreenMode.Windowed);
     }
 
     void OnClickChangeLV()
     {
-        PFunc.Log("OnClickChangeLV", gameLevel);
+        Sound.PlaySound("smb_coin");
         GameModController.Instance.OnLoadScene(gameLevel);
     }
 
     void OnClickChangeMD()
     {
-        
+        Sound.PlaySound("smb_coin");
+        ModData.mTrap = gameMode ==1;
     }
 
     void OnClose()
     {
-        PFunc.Log("OnClose");
         center.SetActive(false);
     }
 }

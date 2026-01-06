@@ -40,6 +40,7 @@ public class ModVideoPlayerCreater : MonoBehaviour
 
     public void OnPlayDJ()
     {
+        if (Config.isLoading) return;
         int number = Random.Range(1, 13);
         currentVideoNumber = number;
         OnCreateModVideoPlayer(Vector3.zero, Vector3.one, Vector3.zero, $"DJ/{number}", 1);
@@ -62,9 +63,16 @@ public class ModVideoPlayerCreater : MonoBehaviour
 
         int currentBeatIndex = 0;
         float startTime = 0;
-
+        if (Config.isLoading)
+        {
+            yield return new WaitUntil(() => !Config.isLoading);
+        }
         while (currentBeatIndex < beatTimes.Count)
         {
+            if (Config.isLoading)
+            {
+                yield return new WaitUntil(() => !Config.isLoading);
+            }
             startTime += Time.deltaTime;
             // 检查是否到达下一个卡点时间（考虑一定的误差范围）
             if (currentBeatIndex < beatTimes.Count &&

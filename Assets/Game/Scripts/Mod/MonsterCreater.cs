@@ -62,30 +62,11 @@ public class MonsterCreater : MonoBehaviour
         }
 
         MonsterSpawnData data = spawnDataDict[monsterPrefab];
-        if (count <= 1)
+        data.count += count;
+        if (!data.isCreating)
         {
-            GameObject obj =InstantiateSingleMonster(monsterPrefab, OnGetCreatePos(data));
-            switch (data.type)
-            {
-                case "FlyKoopa":
-                    float hight = Random.Range(0.27f, 7);
-                    obj.GetComponent<FlyKoopa>().originalY = hight;
-                    break;
-                case "flyFish":
-                    float maxHight = Random.Range(2, 8);
-                    obj.GetComponent<FlyFish>().maxHeight = maxHight;
-                    break;
-            }
-            MonsterCount -= 1;
-        }
-        else
-        {
-            data.count += count;
-            if (!data.isCreating)
-            {
-                data.isCreating = true;
-                StartCoroutine(CreateMonsterBatch(monsterPrefab));
-            }
+            data.isCreating = true;
+            StartCoroutine(CreateMonsterBatch(monsterPrefab));
         }
     }
 

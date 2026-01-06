@@ -36,7 +36,7 @@ public class GameModController : MonoBehaviour
     void OnInitDistance()
     {
         if(passDistance==null) passDistance = new Dictionary<string, float>();
-        passDistance.Add("1-1",182);
+        passDistance.Add("1-1",191);
         passDistance.Add("1-2", 155);
         passDistance.Add("1-3", 142);
         passDistance.Add("1-4", 122);
@@ -67,11 +67,10 @@ public class GameModController : MonoBehaviour
         string name = Config.passName[value];
         if (mainMoveCoroutine==null)
         {
-            Config.isLoading = true;
+            ModController.Instance.OnModPause();
             Config.passIndex = value;
             mainMoveCoroutine = StartCoroutine(OnLoadScence(name));
         }
-      
     }
 
     public void OnLoadScene(string name)
@@ -79,7 +78,7 @@ public class GameModController : MonoBehaviour
         Config.passIndex = Array.IndexOf(Config.passName, name);
         if (mainMoveCoroutine == null)
         {
-            Config.isLoading = true;
+            ModController.Instance.OnModPause();
             mainMoveCoroutine = StartCoroutine(OnLoadScence(name));
         }
     }
@@ -87,13 +86,14 @@ public class GameModController : MonoBehaviour
     {
         if (mainMoveCoroutine == null)
         {
-            Config.isLoading = true;
+            ModController.Instance.OnModPause();
             mainMoveCoroutine = StartCoroutine(OnLoadScence(name));
         }
     }
 
     IEnumerator OnLoadScence(string name)
     {
+        Sound.PauseOrPlayVolumeMusic(false);
         yield return Loaded.OnLoadScence(name);
         Scene scene = SceneManager.GetActiveScene();
         yield return new WaitForSeconds(1);
@@ -104,6 +104,9 @@ public class GameModController : MonoBehaviour
         //PlayerController.Instance.transform.position = new Vector3(-2, 0);
         Camera.main.transform.position = new Vector3(1.5f, 5,-10);
         if(Config.passName.Contains(scene.name))
-             Config.isLoading = false;
+        {
+            Config.isLoading = false;
+            Sound.PlayMusic("background");
+        }
     }
 }

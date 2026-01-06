@@ -1728,7 +1728,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3713772949689718507}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -2871,6 +2871,7 @@ MonoBehaviour:
   endGameSound: {fileID: 8300000, guid: 34e5b02d56319410d9a7067c0b82dfef, type: 3}
   fireballSound: {fileID: 8300000, guid: e4d49c42462594f558fcb5a71b7203b8, type: 3}
   isHit: 0
+  isHidden: 0
   playerBreak: {fileID: 826920121121590103}
 --- !u!95 &5562541293349834303
 Animator:
@@ -3051,7 +3052,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 0}
   rotationTarget: {fileID: 903607213494254244}
-  minX: -7.5
+  minX: -5.5
   maxX: 192
   minY: 0
   maxY: 9

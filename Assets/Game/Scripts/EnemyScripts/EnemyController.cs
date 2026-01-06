@@ -252,6 +252,7 @@ namespace EnemyScripts
 
         IEnumerator Destroy()
         {
+            Sound.PlaySound("smb_kick");
             if (bodys != null && bodys.Count > 0)
             {
                 for (var i = 0; i < bodys.Count; i++)
@@ -260,11 +261,11 @@ namespace EnemyScripts
                 }
             }
             spriteTrans.flipY = true;
-            Vector3 dropDir = _moveDirection == Vector3.left ? new Vector3(4, 1, 0) : new Vector3(-4, 1, 0);
+            Vector3 dropDir = _moveDirection == Vector3.left ? new Vector3(5, 1, 0) : new Vector3(-5, 1, 0);
             rigidbody2D.AddForce(dropDir,ForceMode2D.Impulse);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.6f);
             rigidbody2D.isKinematic = true;
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.6f);
             SimplePool.Despawn(gameObject);
         }
     }

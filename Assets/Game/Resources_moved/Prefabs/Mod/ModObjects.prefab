@@ -807,6 +807,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6492528543588968596}
   - component: {fileID: 6460732701195596687}
+  - component: {fileID: 1035077893677074690}
   m_Layer: 0
   m_Name: ModObjects
   m_TagString: Untagged
@@ -854,6 +855,22 @@ MonoBehaviour:
   itemParent: {fileID: 2553086938768624210}
   statusController: {fileID: 3586819452115885477}
   uISystem: {fileID: 8988145466514434337}
+--- !u!114 &1035077893677074690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4739132388723911409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 410739a4ecab7a242acfd2afcd6ae3cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverIP: 127.0.0.1
+  port: 2222
+  autoReconnect: 1
+  reconnectDelay: 5
 --- !u!1 &4742786084901806774
 GameObject:
   m_ObjectHideFlags: 0

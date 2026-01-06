@@ -62,4 +62,9 @@ public class ModController : MonoBehaviour
             }
         }
     }
+    public void OnModPause()
+    {
+        Config.isLoading = true;
+        StartCoroutine(OnDequeueObjs());
+    }
 }

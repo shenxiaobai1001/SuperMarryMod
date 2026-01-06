@@ -116,11 +116,13 @@ namespace PlayerScripts
                     _playerAudio.PlayOneShot(GameStatusController.IsBigPlayer ? jumpSound : jumpBigSound);
                     _isOnGround = false;
                     _playerAnim.SetTrigger(JumpTrig);
+                    PFunc.Log("tuaitye", jumpForce);
                     _playerRb.AddForce(new Vector2(0f, jumpForce));
                     _playerAnim.SetBool(IdleB, false);
                     _playerAnim.SetBool(WalkB, false);
                     _playerAnim.SetBool(RunB, false);
                 }
+
 
                 DenyMidAirJump();
 
@@ -233,11 +235,6 @@ namespace PlayerScripts
                 //}
             }
 
-            if (Mathf.RoundToInt(transform.position.x) == 285)
-            {
-                GameStatusController.IsBossBattle = true;
-            }
-
             isDead = GameStatusController.IsDead;
             if (isInvincible)
             {
@@ -303,50 +300,15 @@ namespace PlayerScripts
         {
             if (!_isCrouching && !_isGoingDownPipeAble)
             {
+                // 修改：使用AD键获取水平输入
                 float horizontalInput = 0f;
                 if (Input.GetKey(KeyCode.A)) horizontalInput = -1f;
                 if (Input.GetKey(KeyCode.D)) horizontalInput = 1f;
 
-                // 调试1：检查输入
-                //Debug.Log($"水平输入: {horizontalInput}");
-
-                // 调试2：检查速度和参数
-                //Debug.Log($"速度值: {speed}, 固定时间: {Time.fixedDeltaTime}");
-
                 Vector2 playerVelocity = _playerRb.velocity;
-
-                // 调试3：检查当前速度
-                //Debug.Log($"当前速度: {playerVelocity}");
-
-                // 调试4：计算并检查目标速度
-                float calculatedSpeed = horizontalInput * speed * Time.fixedDeltaTime;
-                //Debug.Log($"计算出的目标速度分量: {calculatedSpeed}");
-
                 Vector3 targetVelocity = new Vector2(horizontalInput * speed * Time.fixedDeltaTime, playerVelocity.y);
-
-                // 调试5：检查SmoothDamp的引用速度
-                //Debug.Log($"SmoothDamp引用速度前: {_velocity}");
-
                 _playerRb.velocity = Vector3.SmoothDamp(playerVelocity, targetVelocity, ref _velocity, smoothTime);
-
-                // 调试6：检查SmoothDamp后的引用速度
-                //Debug.Log($"SmoothDamp引用速度后: {_velocity}");
-
-                // 调试7：检查最终应用的速度
-                //Debug.Log($"应用后的速度: {_playerRb.velocity}");
             }
-            //if (!_isCrouching && !_isGoingDownPipeAble)
-            //{
-            //    // 修改：使用AD键获取水平输入
-            //    float horizontalInput = 0f;
-            //    if (Input.GetKey(KeyCode.A)) horizontalInput = -1f;
-            //    if (Input.GetKey(KeyCode.D)) horizontalInput = 1f;
-
-            //    Vector2 playerVelocity = _playerRb.velocity;
-            //    Vector3 targetVelocity = new Vector2(horizontalInput * speed * Time.fixedDeltaTime, playerVelocity.y);
-            //    _playerRb.velocity = Vector3.SmoothDamp(playerVelocity, targetVelocity, ref _velocity, smoothTime);
-            //    PFunc.Log(_playerRb.velocity, horizontalInput, speed);
-            //}
 
             // 修改：使用S键下蹲
             if (_isCrouching && (CompareTag("BigPlayer") || CompareTag("UltimateBigPlayer")) && !_isAboveSpecialPipe)
@@ -412,7 +374,7 @@ namespace PlayerScripts
 
             if (other.gameObject.CompareTag("Pole"))
             {
-                Config.isLoading = true;
+                ModController.Instance.OnModPause();
                 _playerAudio.PlayOneShot(flagPoleSound);
                 _flagPos = other.gameObject.transform.position.x;
                 _isFinish = true;
@@ -782,7 +744,7 @@ namespace PlayerScripts
             // 重置速度相关变量
             speed = 410f;
             slideDownSpeed = 410f;
-            jumpForce = 795f;
+            jumpForce = 1030;
 
     
             // 确保面向右侧
@@ -809,7 +771,6 @@ namespace PlayerScripts
             if (startPosition.HasValue)
             {
                 transform.position = startPosition.Value;
-                PFunc.Log("重置玩家状态",   transform.position);
             }
 
 
