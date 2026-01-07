@@ -19,7 +19,7 @@ public class UIOption : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.J)&&!click)
         {
             click = true;
-            gameStatus.StartGame();
+            ModController.Instance.statusController.StartGame();
         }
     }
 }

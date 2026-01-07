@@ -3138,7 +3138,7 @@ TextureImporter:
         x: 143
         y: 1105
         width: 21
-        height: 30
+        height: 22
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -13274,6 +13274,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: misc-3_548
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 1128
+        width: 2
+        height: 7
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 20f8e09ac3a2a1c45ba0d5ea4fd24fee
+      internalID: -1544047381
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -13784,6 +13805,7 @@ TextureImporter:
       misc-3_545: -468924812250438351
       misc-3_546: -151764054316247511
       misc-3_547: 3090454168030488462
+      misc-3_548: -1544047381
       misc-3_55: 6549919010780833342
       misc-3_56: 7132031642437106062
       misc-3_57: 7717946599990775819

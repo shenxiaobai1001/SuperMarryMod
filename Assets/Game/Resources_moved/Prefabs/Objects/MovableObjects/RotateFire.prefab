@@ -339,7 +339,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotateObj: {fileID: 5152650268079905973}
-  zValue: 0
+  zValue: 1
 --- !u!61 &8922043608463913810
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -34,7 +34,14 @@ public class Axesystem : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         Config.passIndex++;
-        string name = Config.passName[Config.passIndex];
-        GameModController.Instance.OnLoadScene(name);
+        if (Config.passIndex >= Config.passName.Length)
+        {
+            GameModController.Instance.OnLoadScene("StartingScene");
+        }
+        else
+        {
+            string name = Config.passName[Config.passIndex];
+            GameModController.Instance.OnLoadScene(name);
+        }
     }
 }

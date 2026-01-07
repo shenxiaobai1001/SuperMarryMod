@@ -132,31 +132,31 @@ namespace SystemScripts
             if (!GameStatusController.IsDead && !player.isWalkingToCastle && !player.isInCastle &&
                 !GameStatusController.IsGameFinish)
             {
-               ModController.Instance.statusController.SetTime(time -= Time.deltaTime * 2);
-                if (time < 0)
-                {
-                    PFunc.Log("掉到坑里");
-                    time = 0;
-                    GameStatusController.IsDead = true;
-                }
+               //ModController.Instance.statusController.SetTime(time -= Time.deltaTime * 2);
+               // if (time < 0)
+               // {
+               //     PFunc.Log("掉到坑里");
+               //     time = 0;
+               //     GameStatusController.IsDead = true;
+               // }
             }
             else if (player.isInCastle)
             {
-                ModController.Instance.statusController.SetTime(time -= Time.deltaTime * 60);
+                //ModController.Instance.statusController.SetTime(time -= Time.deltaTime * 60);
 
-                if (time < 0)
-                {
-                    time = 0;
-                    StartCoroutine(NextLevel());
-                }
-                else
-                {
-                    if (finalTime - time >= 1f)
-                    {
-                        GameStatusController.Score += 50;
-                        finalTime = time;
-                    }
-                }
+                //if (time < 0)
+                //{
+                //    time = 0;
+                //    StartCoroutine(NextLevel());
+                //}
+                //else
+                //{
+                //    if (finalTime - time >= 1f)
+                //    {
+                //        GameStatusController.Score += 50;
+                //        finalTime = time;
+                //    }
+                //}
             }
         }
 
@@ -215,6 +215,7 @@ namespace SystemScripts
             yield return new WaitForSeconds(3);
             Config.passIndex++;
             string name = Config.passName[Config.passIndex];
+            PFunc.Log(Config.passIndex, name);
             GameModController.Instance.OnLoadScene(name);
         }
 

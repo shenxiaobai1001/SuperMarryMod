@@ -11,7 +11,7 @@ namespace PlayerScripts
 
         public float speed = 410f;
         public float slideDownSpeed = 410f;
-        public float jumpForce = 795f;
+        public float jumpForce = 1050;
         private float _flagPos;
         private float _startInvincible;
         private float _invincibleTime;
@@ -109,14 +109,12 @@ namespace PlayerScripts
             {
                 // 修改1：J键 - 攻击/加速
                 HandleJKeyInput();
-
                 // 修改2：K键 - 跳跃
                 if (Input.GetKeyDown(KeyCode.K) && _isOnGround)
                 {
                     _playerAudio.PlayOneShot(GameStatusController.IsBigPlayer ? jumpSound : jumpBigSound);
                     _isOnGround = false;
                     _playerAnim.SetTrigger(JumpTrig);
-                    PFunc.Log("tuaitye", jumpForce);
                     _playerRb.AddForce(new Vector2(0f, jumpForce));
                     _playerAnim.SetBool(IdleB, false);
                     _playerAnim.SetBool(WalkB, false);
@@ -171,13 +169,13 @@ namespace PlayerScripts
             {
                 _isSprinting = true;
                 speed = 600;
-                jumpForce = 1160;
+                jumpForce = 1180;
             }
             else if (Input.GetKeyUp(KeyCode.J))
             {
                 _isSprinting = false;
                 speed = 410;
-                jumpForce = 1030;
+                jumpForce = 1050;
             }
         }
 
@@ -327,6 +325,7 @@ namespace PlayerScripts
 
         private void OnCollisionEnter2D(Collision2D other)
         {
+            PFunc.Log("OnCollisionEnter2D", other.gameObject.tag);
             if (other.gameObject.CompareTag("EnemyBody"))
             {
                 if (!GameStatusController.IsBigPlayer)
@@ -621,7 +620,8 @@ namespace PlayerScripts
             yield return new WaitForSeconds(0.1f);
             if (ModData.mLife <= 0)
             {
-                yield return ModController.Instance.OnDequeueObjs();
+                PFunc.Log("LoadingScene");
+                ModController.Instance.statusController.mLife = 30;
                 ModData.mLife = 30;
                 GameModController.Instance.OnLoadTargetScene("LoadingScene");
             }
@@ -748,7 +748,7 @@ namespace PlayerScripts
             // 重置速度相关变量
             speed = 410f;
             slideDownSpeed = 410f;
-            jumpForce = 1030;
+            jumpForce = 1050;
 
     
             // 确保面向右侧

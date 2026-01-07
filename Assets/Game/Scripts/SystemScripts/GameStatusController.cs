@@ -24,6 +24,7 @@ namespace SystemScripts
         public GameObject secondMessagePopup;
         public Transform scoreParent;
         private AudioSource _gameStatusAudio;
+        public GameObject LiveStart;
 
         public AudioClip pauseSound;
         public AudioClip stageClearSound;
@@ -57,6 +58,7 @@ namespace SystemScripts
             _pauseTrigger = false;
             mLife = ModData.mLife;
             tx_life.text = mLife.ToString();
+            LiveStart.SetActive(false);
         }
 
         private void Update()
@@ -263,7 +265,7 @@ namespace SystemScripts
             currentLifeCoroutine = StartCoroutine(OnShowCreateCount());
         }
         public TextMeshProUGUI tx_life;
-        int mLife = 0;
+        [HideInInspector] public int mLife = 30;
         private Coroutine currentLifeCoroutine; // 保存当前运行的协程引用
         private Coroutine currentCretateine; // 保存当前运行的协程引用
         public void OnChangeLife(object msg)

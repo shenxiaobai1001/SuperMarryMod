@@ -10,6 +10,7 @@ namespace EnemyScripts
     {
         [Header("移动设置")]
         public float speed = 2;
+        public float Patrolspeed = 2;
         public float pushForce = 500;
         public bool isTouchByPlayer;
 
@@ -62,7 +63,7 @@ namespace EnemyScripts
             rigidbody2D.isKinematic = isPatrolling;
             if (isPatrolling)
             {
-                _currentPatrolTarget = patrolPointA;  // 直接使用世界坐标
+                _currentPatrolTarget = patrolPointB;  // 直接使用世界坐标
                 _moveDirection = GetMoveDirection(_currentPatrolTarget);
             }
             isTouchByPlayer = false;
@@ -74,7 +75,6 @@ namespace EnemyScripts
             {
                 deadEnableCollider.enabled = false;
             }
-            isPatrolling = false;
             canMove = isCanMove;
             isDead = false;
 
@@ -104,7 +104,7 @@ namespace EnemyScripts
             if (isPatrolling)
             {
                 // 直接向目标点移动
-                transform.position = Vector3.MoveTowards(transform.position, _currentPatrolTarget, speed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, _currentPatrolTarget, Patrolspeed * Time.deltaTime);
 
                 // 更新精灵朝向
                 if (spriteTrans != null)
@@ -112,7 +112,6 @@ namespace EnemyScripts
                     spriteTrans.flipX = _moveDirection.x > 0;
                 }
 
-                PFunc.Log("检查是否到达目标点", _currentPatrolTarget, (Vector3.Distance(transform.position, _currentPatrolTarget) < patrolSwitchDistance));
                 // 检查是否到达目标点
                 if (Mathf.Abs(transform.position.x - _currentPatrolTarget.x) <= patrolSwitchDistance)
                 {

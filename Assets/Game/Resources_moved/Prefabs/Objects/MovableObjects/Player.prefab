@@ -2839,7 +2839,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 410
   slideDownSpeed: 5
-  jumpForce: 1025
+  jumpForce: 1050
   smoothTime: 0.6
   isDead: 0
   _isFinish: 0

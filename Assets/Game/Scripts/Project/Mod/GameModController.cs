@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using SystemScripts;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,7 +15,6 @@ public class GameModController : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -25,7 +25,7 @@ public class GameModController : MonoBehaviour
 
     Dictionary<string,float> passDistance=new Dictionary<string, float>();
 
-
+    public GameStatusController gameStatus;
     public string nowPos = "";
 
     // Start is called before the first frame update
@@ -84,18 +84,25 @@ public class GameModController : MonoBehaviour
     }
     public void OnLoadTargetScene(string name)
     {
+        if (name == "LoadingScene")
+        {
+           if(gameStatus) gameStatus.LiveStart.SetActive(true);
+        }
         if (mainMoveCoroutine == null)
         {
             ModController.Instance.OnModPause();
             mainMoveCoroutine = StartCoroutine(OnLoadScence(name));
         }
     }
+    public void OnBeginLoading()
+    {
+ 
+    }
 
     IEnumerator OnLoadScence(string name)
     {
-        Sound.PauseOrPlayVolumeMusic(false);
+        Sound.PauseOrPlayVolumeMusic(true);
         yield return Loaded.OnLoadScence(name);
-        Scene scene = SceneManager.GetActiveScene();
         yield return new WaitForSeconds(1);
         mainMoveCoroutine = null;
         nowPos = name;
@@ -103,10 +110,17 @@ public class GameModController : MonoBehaviour
             PlayerModMoveController.Instance.OnSetMinValue(-5.5f, passDistance[nowPos]);
         //PlayerController.Instance.transform.position = new Vector3(-2, 0);
         Camera.main.transform.position = new Vector3(1.5f, 5,-10);
-        if(Config.passName.Contains(scene.name))
+        Scene scene = SceneManager.GetActiveScene();
+        if (Config.passName.Contains(scene.name))
         {
             Config.isLoading = false;
             Sound.PlayMusic("background");
+        }
+        if (scene.name == "LoadingScene")
+        {
+            yield return new WaitForSeconds(1);
+            gameStatus.LiveStart.SetActive(false);
+            OnLoadScene("1-1");
         }
     }
 }

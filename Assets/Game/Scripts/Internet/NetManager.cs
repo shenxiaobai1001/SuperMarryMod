@@ -72,7 +72,7 @@ public class NetManager : Singleton<NetManager>
                 GameManager.Instance.time -= 10;
                 break;
             case "ÉúÃü+10%":
-                ModData.mLife +=(int)(ModData.mLife * 0.1f);
+                ModData.mLife += (int)(ModData.mLife * 0.1f);
                 EventManager.Instance.SendMessage(Events.OnChangeLife);
                 break;
             case "ÉúÃü-10%":
