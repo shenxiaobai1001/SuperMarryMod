@@ -89,6 +89,7 @@ namespace SystemScripts
                 }
             }
         }
+        public float showCount = 12;
 
         private void SetActiveEnemiesWhenSeePlayer()
         {
@@ -96,7 +97,7 @@ namespace SystemScripts
             {
                 if (enemyGameObjects[i] != null)
                 {
-                    if (enemyGameObjects[i].transform.position.x - player.transform.position.x < 12)
+                    if (enemyGameObjects[i].transform.position.x - player.transform.position.x < showCount)
                     {
                         enemyGameObjects[i].SetActive(true);
                     }
@@ -125,38 +126,39 @@ namespace SystemScripts
                 }
             }
         }
-
+        bool checkLevel = true;
         private void UpdateTime()
         {
 
             if (!GameStatusController.IsDead && !player.isWalkingToCastle && !player.isInCastle &&
                 !GameStatusController.IsGameFinish)
             {
-               //ModController.Instance.statusController.SetTime(time -= Time.deltaTime * 2);
-               // if (time < 0)
-               // {
-               //     PFunc.Log("掉到坑里");
-               //     time = 0;
-               //     GameStatusController.IsDead = true;
-               // }
+                ModController.Instance.statusController.SetTime(time -= Time.deltaTime * 2);
+                if (time < 0)
+                {
+                    PFunc.Log("掉到坑里");
+                    time = 0;
+                    GameStatusController.IsDead = true;
+                }
             }
             else if (player.isInCastle)
             {
-                //ModController.Instance.statusController.SetTime(time -= Time.deltaTime * 60);
+                ModController.Instance.statusController.SetTime(time -= Time.deltaTime * 60);
 
-                //if (time < 0)
-                //{
-                //    time = 0;
-                //    StartCoroutine(NextLevel());
-                //}
-                //else
-                //{
-                //    if (finalTime - time >= 1f)
-                //    {
-                //        GameStatusController.Score += 50;
-                //        finalTime = time;
-                //    }
-                //}
+                if (time < 0&& checkLevel)
+                {
+                    checkLevel = false;
+                    time = 0;
+                    StartCoroutine(NextLevel());
+                }
+                else
+                {
+                    if (finalTime - time >= 1f)
+                    {
+                        GameStatusController.Score += 50;
+                        finalTime = time;
+                    }
+                }
             }
         }
 

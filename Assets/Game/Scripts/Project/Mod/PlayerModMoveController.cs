@@ -1,6 +1,7 @@
 using PlayerScripts;
 using System.Collections;
 using System.Collections.Generic;
+using SystemScripts;
 using UnityEngine;
 
 public class MoveEffectData
@@ -328,10 +329,11 @@ public class PlayerModMoveController : MonoBehaviour
                 // 更新移动状态
                 if (currentMoveEffect != null)
                 {
+                    PlayerController.Instance.isHit = true;
                     UpdateMovement();
                 }
             }
-     
+        
         }
     }
 
@@ -360,11 +362,14 @@ public class PlayerModMoveController : MonoBehaviour
         // 计算移动
         Vector3 moveDelta = moveDirection * currentMoveEffect.moveSpeed * Time.fixedDeltaTime;
         Vector3 newPosition = playerTransform.position + moveDelta;
+        tminX = GameStatusController.IsHidden ? 14 : minX;
+        tminY=GameStatusController.IsHidden ? 31 : minX;
+        tmaxX = GameStatusController.IsHidden ? 25 : maxX;
+        tmaxY = GameStatusController.IsHidden ? 41 : maxY;
 
         // 边界限制
-        newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
-        newPosition.y = Mathf.Clamp(newPosition.y, minY, maxY);
-        PFunc.Log(newPosition);
+        newPosition.x = Mathf.Clamp(newPosition.x, tminX, tmaxX);
+        newPosition.y = Mathf.Clamp(newPosition.y, tminY, tmaxY);
         // 应用移动
         playerTransform.position = newPosition;
 
@@ -374,7 +379,10 @@ public class PlayerModMoveController : MonoBehaviour
             rotationTarget.Rotate(Vector3.up, rotationSpeed * Time.fixedDeltaTime);
         }
     }
-
+    float tminX = 0;
+    float tminY = 0;
+    float tmaxX = 0;
+    float tmaxY = 0;
     /// <summary>
     /// 检查并处理所有移动完成的情况
     /// </summary>

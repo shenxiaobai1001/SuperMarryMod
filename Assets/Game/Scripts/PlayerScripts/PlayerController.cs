@@ -75,6 +75,7 @@ namespace PlayerScripts
         private static readonly int VulnerableB = Animator.StringToHash("Vulnerable_b");
         private static readonly int FireB = Animator.StringToHash("Fire_b");
 
+        Vector3 startPos;
         void Awake()
         {
             if (Instance == null)
@@ -92,7 +93,11 @@ namespace PlayerScripts
             {
                 tag = GameStatusController.PlayerTag;
             }
-
+            GameStatusController.IsDead = false;
+            GameStatusController.IsGameFinish = false;
+            GameStatusController.IsStageClear = false;
+            GameStatusController.IsShowMessage = false;
+            GameStatusController.IsBossBattle = false;
             _playerAudio = GetComponent<AudioSource>();
             _velocity = Vector3.zero;
             _playerAnim = GetComponent<Animator>();
@@ -100,6 +105,7 @@ namespace PlayerScripts
             _isFinish = false;
             _isOnGround = true;
             isInCastle = false;
+            startPos=transform.position;
         }
 
         private void Update()
@@ -144,13 +150,21 @@ namespace PlayerScripts
                     _playerRb.isKinematic = true;
                     transform.Translate(slideDownSpeed / 2.5f * Time.deltaTime * Vector3.down);
                 }
+                if (transform.position.y <= -2 && checkYpos)
+                {
+                    checkYpos = false;
+                    GameStatusController.IsDead = true;
+                    isRest = true;
+                    OnDieFunc();
+                }
+
+                if (GameStatusController.IsHidden&& transform.position.y<25)
+                {
+                    GameStatusController.IsHidden = false;
+                    GameStatusController.HiddenMove = false;
+                }
             }
-            if (transform.position.y <= -2 && checkYpos) {
-                checkYpos = false;
-                GameStatusController.IsDead = true;
-                isRest = true;
-                OnDieFunc();
-            }
+        
         }
         bool isRest = false;
         bool checkYpos = true;
@@ -221,7 +235,7 @@ namespace PlayerScripts
 
         private void FixedUpdate()
         {
-            if (isHit) return;
+           if (isHit) return;
             if (GameStatusController.IsGameFinish)
             {
                 transform.Translate(slideDownSpeed / 1.25f * Time.deltaTime * Vector3.right);
@@ -325,7 +339,6 @@ namespace PlayerScripts
 
         private void OnCollisionEnter2D(Collision2D other)
         {
-            PFunc.Log("OnCollisionEnter2D", other.gameObject.tag);
             if (other.gameObject.CompareTag("EnemyBody"))
             {
                 if (!GameStatusController.IsBigPlayer)
@@ -342,7 +355,7 @@ namespace PlayerScripts
                     }
                     else
                     {
-                        Physics2D.IgnoreCollision(GetComponent<Collider2D>(),smallPlayerCollider.GetComponent<Collider2D>());
+                        Physics2D.IgnoreCollision(GetComponent<Collider2D>(), smallPlayerCollider.GetComponent<Collider2D>());
                     }
                 }
                 else if (GameStatusController.IsBigPlayer)
@@ -373,7 +386,7 @@ namespace PlayerScripts
 
             if (other.gameObject.CompareTag("Pole"))
             {
-                PFunc.Log();
+                Sound.PauseOrPlayVolumeMusic(true);
                 ModController.Instance.OnModPause();
                 _playerAudio.PlayOneShot(flagPoleSound);
                 _flagPos = other.gameObject.transform.position.x;
@@ -461,6 +474,16 @@ namespace PlayerScripts
             {
                 _playerAudio.PlayOneShot(kickSound);
             }
+            if (other.gameObject.CompareTag("NPC"))
+            {
+                findNpc = true;
+            }
+            if (other.gameObject.CompareTag("HorSpecialPipe"))
+            {
+                ModController.Instance.OnModPause();
+                OnInHorSpecialPipe();
+            }
+       
         }
 
         private void OnCollisionExit2D(Collision2D other)
@@ -503,7 +526,7 @@ namespace PlayerScripts
             {
                 StartCoroutine(OutHiddenPass());
             }
-            
+
         }
         private void OnTriggerExit2D(Collider2D collision)
         {
@@ -672,12 +695,13 @@ namespace PlayerScripts
                 GameStatusController. HiddenMove = Config.passIndex!=0;
                  isHidden = false;
                 transform.position = GameManager.Instance.hiddenEnterPos.position;
-                Camera.main.transform.position = new Vector3(0, 37, -10);
+                Camera.main.transform.position = new Vector3(20, 37, -10);
                 PlayerModController.Instance.OnChangeStateFalse();
             }
         }
         private IEnumerator OutHiddenPass()
         {
+            _playerRb.velocity = Vector2.zero;
             _playerAudio.PlayOneShot(pipeSound);
             PlayerModController.Instance.OnChangeStateTrue();
 
@@ -717,6 +741,29 @@ namespace PlayerScripts
 
             isHidden = false;
             PlayerModController.Instance.OnChangeStateFalse();
+        }
+        void OnInHorSpecialPipe()
+        {
+            StartCoroutine(OnInHorSpecialPipeIE());
+        }
+        private IEnumerator OnInHorSpecialPipeIE()
+        {
+            _playerRb.velocity = Vector2.zero;
+            _playerAudio.PlayOneShot(pipeSound);
+            PlayerModController.Instance.OnChangeStateTrue();
+
+            float allTime = 1f;
+            float time = 0;
+
+            // 第一部分：水平移动
+            while (time < allTime)
+            {
+                transform.Translate(Vector2.right * 1 * Time.deltaTime);
+                time += Time.deltaTime;
+                yield return null;
+            }
+            Loaded.OnLoadScence("Excessive");
+
         }
         // 在PlayerController类中添加以下方法
         public void ResetPlayerState(Vector3? startPosition = null)
@@ -777,32 +824,6 @@ namespace PlayerScripts
                 transform.position = startPosition.Value;
             }
 
-
-            //// 5. 重置动画状态
-            //if (_playerAnim != null)
-            //{
-            //    // 重置所有bool参数
-            //    _playerAnim.SetBool(IdleB, true);
-            //    _playerAnim.SetBool(WalkB, true);
-            //    _playerAnim.SetBool(RunB, true);
-            //    _playerAnim.SetBool(DieB, false);
-            //    _playerAnim.SetBool(BigB, false);
-            //    _playerAnim.SetBool(HugB, false);
-            //    _playerAnim.SetBool(UltimateB, false);
-            //    _playerAnim.SetBool(CrouchB, false);
-            //    _playerAnim.SetBool(VulnerableB, false);
-            //    _playerAnim.SetBool(FireB, false);
-
-            //    // 重置其他参数
-            //    _playerAnim.SetFloat(SpeedF, 0f);
-            //    _playerAnim.SetFloat(UltimateDurationF, 0f);
-
-            //    // 重置触发器（需要特殊处理，可以记录并重置）
-            //    _playerAnim.ResetTrigger(JumpTrig);
-
-            //    // 强制重置动画状态
-            //    _playerAnim.Play("Idle", 0, 0f);
-            //}
             if (_playerAnim)
             {
                 _playerAnim.Rebind();
@@ -830,7 +851,7 @@ namespace PlayerScripts
                 smallPlayer.SetActive(false);
                 bigPlayer.SetActive(true);
             }
-
+            findNpc = false;
             // 7. 重置层碰撞
             Physics2D.IgnoreLayerCollision(8, 9, false);
 
@@ -869,7 +890,32 @@ namespace PlayerScripts
         // 可选：添加一个重载方法，使用默认位置
         public void ResetPlayerState()
         {
-            ResetPlayerState(Vector3.zero);
+            ResetPlayerState(startPos);
+        }
+        bool findNpc = false;
+        public void OnToFindNpc()
+        {
+            _playerRb.velocity = Vector2.zero;
+            findNpc = false;
+            StartCoroutine(OnFindNpc());
+        }
+        IEnumerator OnFindNpc()
+        {
+            if (!_isFacingRight)
+            {
+                transform.Rotate(0, 180, 0);
+                _isFacingRight = true;
+            }
+            _playerAnim.SetFloat(SpeedF, 3f);
+            PlayerModController.Instance.OnChangeState(true);
+            _playerAnim.SetBool(RunB, true);
+            while (!findNpc)
+            {
+                transform.Translate(Vector3.right * 10 * Time.deltaTime);
+                yield return null;  
+            }
+            _playerRb.velocity = Vector2.zero;
+            _playerAnim.SetFloat(SpeedF, 0);
         }
     }
 }

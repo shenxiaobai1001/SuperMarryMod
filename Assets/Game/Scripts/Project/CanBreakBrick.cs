@@ -14,11 +14,17 @@ public class CanBreakBrick : MonoBehaviour
     public float initialSpeed = 8f;          // 初始速度
     public float gravity = 9.8f;            // 重力加速度
     public float horizontalVelocity = 4f;   // 水平速度
+    public BreakBrickController breakBrickController;
 
     private Vector3 velocity;
     private bool isTriggered = false;
     private Rigidbody2D rb;
-    
+    Vector3 startPos;
+    private void Start()
+    {
+        startPos = transform.localPosition;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!isTriggered && other.CompareTag("Meteorite"))
@@ -59,7 +65,7 @@ public class CanBreakBrick : MonoBehaviour
 
         float elapsedTime = 0f;
 
-        while (transform.position.y > -30f)
+        while (transform.position.y > -10)
         {
             elapsedTime += Time.deltaTime;
 
@@ -77,14 +83,9 @@ public class CanBreakBrick : MonoBehaviour
             {
                 yield break;
             }
-            // 检查是否需要隐藏物体
-            if (transform.position.y < -30f)
-            {
-                yield break;
-          
-            }
             yield return null;
         }
+       if(breakBrickController) breakBrickController.OnToPool();
         gameObject.SetActive(false);
     }
 
@@ -98,6 +99,8 @@ public class CanBreakBrick : MonoBehaviour
         {
             rb.bodyType = RigidbodyType2D.Static;
         }
+
+        transform.localPosition = startPos;
     }
 
 }

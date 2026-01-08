@@ -69,9 +69,9 @@ public class PowerUpsController : MonoBehaviour
             Destroy(gameObject);
         }
 
-        InteractionWithPlayer(other.gameObject);
-    }
+            InteractionWithPlayer(other.gameObject);
 
+    }
     private IEnumerator SetBoolEatable()
     {
         yield return new WaitForSeconds(1);
@@ -82,13 +82,13 @@ public class PowerUpsController : MonoBehaviour
     {
         if ((other.CompareTag("Player") || other.CompareTag("UltimatePlayer")) && !CompareTag("Coin"))
         {
-            _powerAudio.PlayOneShot(appearSound);
+            //_powerAudio.PlayOneShot(appearSound);
             isTouchByPlayer = true;
             StartCoroutine(SetBoolEatable());
         }
         else if (other.CompareTag("BigPlayer") || other.CompareTag("UltimateBigPlayer") && !CompareTag("Coin"))
         {
-            _powerAudio.PlayOneShot(appearSound);
+            //_powerAudio.PlayOneShot(appearSound);
             isTouchByPlayer = true;
             StartCoroutine(SetBoolEatable());
         }

@@ -48,16 +48,17 @@ public class GameModController : MonoBehaviour
         passDistance.Add("3-3", 125);
         passDistance.Add("3-4", 132);
         passDistance.Add("4-1", 213);
-        passDistance.Add("4-2", 130); 
-        passDistance.Add("4-3", 164);
+        passDistance.Add("4-2", 151); 
+        passDistance.Add("4-3", 138);
+        passDistance.Add("4-4", 163);
     }
 
     public void OnRandromPlayerPos()
     {
         float x = passDistance[nowPos];
-        float randX= UnityEngine.Random.Range(0,x);
-
-        PlayerController.Instance.transform.position = new Vector3(randX, 0, 90);
+        float randX= UnityEngine.Random.Range(2,x);
+        float randY = UnityEngine.Random.Range(0, 6);
+        PlayerController.Instance.transform.position = new Vector3(randX, randY, 90);
     }
     private Coroutine mainMoveCoroutine;
     public void OnRandromPass()
@@ -101,13 +102,12 @@ public class GameModController : MonoBehaviour
 
     IEnumerator OnLoadScence(string name)
     {
+        gameStatus.NpcTalk.SetActive(false);
         Sound.PauseOrPlayVolumeMusic(true);
         yield return Loaded.OnLoadScence(name);
         yield return new WaitForSeconds(1);
         mainMoveCoroutine = null;
         nowPos = name;
-        if (PlayerModMoveController.Instance != null)
-            PlayerModMoveController.Instance.OnSetMinValue(-5.5f, passDistance[nowPos]);
         //PlayerController.Instance.transform.position = new Vector3(-2, 0);
         Camera.main.transform.position = new Vector3(1.5f, 5,-10);
         Scene scene = SceneManager.GetActiveScene();
@@ -115,6 +115,9 @@ public class GameModController : MonoBehaviour
         {
             Config.isLoading = false;
             Sound.PlayMusic("background");
+            if (PlayerModMoveController.Instance != null)
+                PlayerModMoveController.Instance.OnSetMinValue(-5.5f, passDistance[nowPos]);
+            //PlayerController.Instance.ResetPlayerState();
         }
         if (scene.name == "LoadingScene")
         {
@@ -122,5 +125,6 @@ public class GameModController : MonoBehaviour
             gameStatus.LiveStart.SetActive(false);
             OnLoadScene("1-1");
         }
+   
     }
 }

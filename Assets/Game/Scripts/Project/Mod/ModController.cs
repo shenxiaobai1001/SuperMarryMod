@@ -22,13 +22,13 @@ public class ModController : MonoBehaviour
 
     public Transform MonsterParent;
     public Transform itemParent;
+    public Transform createParent;
     public GameStatusController statusController;
     public UISystem uISystem;
     void Start()
     {
         DontDestroyOnLoad(gameObject);
     }
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -61,7 +61,20 @@ public class ModController : MonoBehaviour
                 yield return null;
             }
         }
+        if (createParent.childCount > 0)
+        {
+            for (int i = 0; i < createParent.childCount; i++)
+            {
+                GameObject GO = createParent.GetChild(i).gameObject;
+                if (GO.activeSelf)
+                {
+                    SimplePool.Despawn(GO);
+                }
+                yield return null;
+            }
+        }
     }
+
     public void OnModPause()
     {
         Config.isLoading = true;

@@ -39,6 +39,9 @@ TagManager:
   - Meteorite
   - Hidden
   - outHidden
+  - Axesystem
+  - NPC
+  - HorSpecialPipe
   layers:
   - Default
   - TransparentFX

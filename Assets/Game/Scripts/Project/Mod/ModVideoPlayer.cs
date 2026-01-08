@@ -17,7 +17,7 @@ public class ModVideoPlayer : MonoBehaviour
     void Start()
     {
         mainPlayer.Events.AddListener(OnVideoEvent);         // 订阅播放器本身提供的事件
-        OnInitPlayer();
+
     }
 
     int videoType = 0;
@@ -33,7 +33,7 @@ public class ModVideoPlayer : MonoBehaviour
         center.transform.localScale = scale;
         center.transform.localEulerAngles = rotate;
         pathTitle = path;
-        snakeScene = snake;
+        snakeScene = snake; OnInitPlayer();
         if (mCanvas) mCanvas.sortingLayerName = layer;  // Sorting Layer 名称
         if (mCanvas) mCanvas.sortingOrder = -5;         // Order in Laye
         OnBeginGetVideo();
@@ -82,10 +82,10 @@ public class ModVideoPlayer : MonoBehaviour
     public void OnEnd()
     {
         Sound.PauseOrPlayVolumeMusic(false);
-        EventManager.Instance.SendMessage(Events.OnModVideoPlayEnd);
       //  EventManager.Instance.SendMessage(Events.BeginSnakeMap, false);
         mainPlayer.CloseMedia();
         SimplePool.Despawn(this.gameObject);
+        EventManager.Instance.SendMessage(Events.OnModVideoPlayEnd);
     }
 
     string pathTitle = "";

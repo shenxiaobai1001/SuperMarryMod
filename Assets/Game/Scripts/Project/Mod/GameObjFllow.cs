@@ -10,13 +10,22 @@ public class GameObjFllow : MonoBehaviour
     public Vector3 offset = new Vector3(0f, 0, 0); // 相对偏移量
     public float followSpeed = 5f;       // 跟随速度
     public bool smoothFollow = true;     // 是否平滑跟随
+    public bool flowPlayer=true;
 
     void LateUpdate()
     {
         if (target == null)
         {
-            if (Camera.main != null)
-                target = Camera.main.transform;
+            if(flowPlayer)
+            {
+                if (PlayerController.Instance != null)
+                    target = PlayerController.Instance.transform;
+            }
+            else
+            {
+                if (Camera.main != null)
+                    target = Camera.main.transform;
+            }
         }
         if (target == null)
         {

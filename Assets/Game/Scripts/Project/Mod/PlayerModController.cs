@@ -1,4 +1,5 @@
 using PlayerScripts;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using SystemScripts;
@@ -23,6 +24,10 @@ public class PlayerModController : MonoBehaviour
     {
         EventManager.Instance.AddListener(Events.OnLazzerHit, OnLazzerHit);
         playerBreak.gameObject.SetActive(false);
+        for (int i = 0; i < modAnimations.Count; i++)
+        {
+            modAnimations[i].gameObject.SetActive(false);
+        }
     }
 
     public Animator animator;
@@ -31,6 +36,7 @@ public class PlayerModController : MonoBehaviour
     public GameObject Center;
     public List<SpriteRenderer> spriteRenderers;
     public PlayerBreak playerBreak;
+    public List<GameObject> modAnimations;
 
     int isPassivityMove;
 
@@ -55,6 +61,7 @@ public class PlayerModController : MonoBehaviour
     }
     public void OnSetPlayerIns(bool show)
     {
+        PFunc.Log("OnSetPlayerIns");
         for (int i = 0; i < spriteRenderers.Count; i++)
         {
             Color color = show ? new Color32(255, 255, 255, 255) : new Color32(255, 255, 255, 0);
@@ -75,9 +82,9 @@ public class PlayerModController : MonoBehaviour
         OnToHitPos();
         bool isRight = PlayerController.Instance._isFacingRight;
         if(isRight)
-            PlayerModMoveController.Instance.TriggerModMove(MoveType.Normal, new Vector3(1, 0.5f), 20, 0.5f, true, false, 1);
+            PlayerModMoveController.Instance.TriggerModMove(MoveType.Normal, new Vector3(1, 0.5f), 20, 0.3f, true, false, 1);
         else
-            PlayerModMoveController.Instance.TriggerModMove(MoveType.Normal, new Vector3(-1, 0.5f), 20, 0.5f, true, false, 1);
+            PlayerModMoveController.Instance.TriggerModMove(MoveType.Normal, new Vector3(-1, 0.5f), 20, 0.3f, true, false, 1);
     }
 
     public void OnAddFourePlayer(Vector3 vector)
@@ -106,8 +113,7 @@ public class PlayerModController : MonoBehaviour
 
         if (PlayerController.Instance != null)
             PlayerController.Instance.isHit = true;
-
-        transform.position = new Vector3(transform.position.x, 50);
+        OnSetPlayerIns(false);
         isPassivityMove++;
     }
 
@@ -130,6 +136,8 @@ public class PlayerModController : MonoBehaviour
             }
             HangSelf.Instance.OnBreakeHang();
         }
+        OnSetPlayerIns(true);
+
     }
 
     public void OnTriggerModAnimator(string riggerName)
@@ -152,7 +160,53 @@ public class PlayerModController : MonoBehaviour
             animator.SetTrigger("smallLazzer");
         }
     }
-    
+
+
+    public void OnBigDao() => OnShowModAnimation(0);
+    public void OnTiggerDao()
+    {
+        if (GameStatusController.IsFirePlayer && GameStatusController.IsBigPlayer)
+        {
+            OnShowModAnimation(1);
+        }
+        else if (!GameStatusController.IsFirePlayer && GameStatusController.IsBigPlayer)
+        {
+            OnShowModAnimation(0);
+        }
+        else
+        {
+            OnTriggerModAnimator("dao");
+        }
+    }
+    public void OnTiggerManace()
+    {
+        if (GameStatusController.IsFirePlayer && GameStatusController.IsBigPlayer)
+        {
+            OnShowModAnimation(3);
+        }
+        else if (!GameStatusController.IsFirePlayer && GameStatusController.IsBigPlayer)
+        {
+            OnShowModAnimation(2);
+        }
+        else {
+            OnTriggerModAnimator("menace");
+        }
+    }
+
+    public void OnChanleModAni()
+    {
+        OnShowModAnimation(5);
+        OnSetPlayerIns(true);
+    }
+    void OnShowModAnimation(int index)
+    {
+        OnSetPlayerIns(false);
+        for (int i = 0; i < modAnimations.Count; i++) {
+            modAnimations[i].gameObject.SetActive(i==index);
+        }
+    }
+
+
     private void OnDestroy()
     {
         EventManager.Instance.RemoveListener(Events.OnLazzerHit, OnLazzerHit);

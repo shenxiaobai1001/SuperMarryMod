@@ -17,15 +17,18 @@ public class UISystem : MonoBehaviour
     public Dropdown dp_Resolution;
     public GameObject btn_Resolution;
     public GameObject btn_Close;
+    public TMP_InputField input_Wall;
+    public TMP_InputField input_Stone;
+    public GameObject Btn_moren;
 
     float musicValue = 0;
     float soundValue = 0;
     int lifeCount = 0;
     int gameMode = 0;
-    int width;
-    int height;
+    int width=1280;
+    int height=960;
 
-    string gameLevel = "";
+    string gameLevel = "1-1";
     // Start is called before the first frame update
     void Start()
     {
@@ -39,20 +42,31 @@ public class UISystem : MonoBehaviour
         dp_Resolution.onValueChanged.AddListener(OnResolutionDropChanged);
         btn_Resolution.Click(OnClickResolution);
         btn_Close.Click(OnClose);
+        input_Wall.onEndEdit.AddListener(OnInputWall);
+        input_Stone.onEndEdit.AddListener(OnInputStone);
+        Btn_moren.Click(OnClickMoRen);
         center.SetActive(false);
+       Invoke("OnInit",1);
     }
 
+    private void OnInit()
+    {
+        musicValue = (float)Sound.VolumeMusic / (float)1;
+        soundValue = (float)Sound.VolumeSound / (float)1;
+        sl_music.value = musicValue;
+        sl_sound.value = soundValue;
+    }
     void OnChangeMusic(float value)
     {
-        musicValue= sl_music.value;
-        soundValue = sl_sound.value;
+        musicValue = value;
+
         Sound.OnSetVolume(musicValue, soundValue);
     }
 
     void OnChangeSound(float value)
     {
-        musicValue = sl_music.value;
-        soundValue = sl_sound.value;
+        soundValue = value;
+
         Sound.OnSetVolume(musicValue, soundValue);
     }
 
@@ -62,7 +76,18 @@ public class UISystem : MonoBehaviour
         lifeCount = int.Parse(value);
         ModData.mLife = lifeCount;
     }
-
+    void OnInputWall(string value)
+    {
+        if (value == string.Empty) return;
+        int vaklyuue = int.Parse(value);
+        CreateWallManager.Instance.wallCount = vaklyuue;
+    }
+    void OnInputStone(string value)
+    {
+        if (value == string.Empty) return;
+         int vaklyuue = int.Parse(value);
+        CreateWallManager.Instance.stonesCount = vaklyuue;
+    }
     private void OnLevelDropChanged(int index)
     {
         int selectedIndex = dp_level.value;
@@ -105,6 +130,20 @@ public class UISystem : MonoBehaviour
     {
         Sound.PlaySound("smb_coin");
         ModData.mTrap = gameMode ==1;
+    }
+
+    void OnClickMoRen()
+    {
+        musicValue = 1;
+        soundValue = 1;
+        sl_music.value = musicValue;
+        sl_sound.value = soundValue;
+        Sound.OnSetVolume(musicValue, soundValue);
+        width = 1280;
+        height = 960;
+        ModData.mTrap = false;
+        Screen.SetResolution(width, height, FullScreenMode.Windowed);
+        Sound.PlaySound("smb_coin");
     }
 
     void OnClose()

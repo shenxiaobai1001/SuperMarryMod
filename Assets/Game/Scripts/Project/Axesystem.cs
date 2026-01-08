@@ -1,6 +1,7 @@
 using PlayerScripts;
 using System.Collections;
 using System.Collections.Generic;
+using SystemScripts;
 using UnityEngine;
 
 public class Axesystem : MonoBehaviour
@@ -17,11 +18,17 @@ public class Axesystem : MonoBehaviour
     {
         if (collision == null) return;
 
-        if (collision.tag.Equals("Player")&& check)
+        if (collision.tag.Contains("Player")&& check)
         {
+            Sound.PauseOrPlayVolumeMusic(true);
+            Config.isLoading = true;
+            ModController.Instance.OnModPause();
+            PlayerController.Instance.isHit = true;
             check = false;
             bridge.OnMinBrige();
-            PlayerController.Instance.isHit = true;
+            PlayerController.Instance._playerRb.velocity = Vector2.zero;
+            PlayerModController.Instance.animator.SetFloat("Speed_f", 0);
+            //PlayerModController.Instance.OnChangeState(false);
             OnEnterNextLevel();
         }
     }
@@ -32,7 +39,9 @@ public class Axesystem : MonoBehaviour
     }
     private static IEnumerator NextLevel()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(5);
+        PlayerController.Instance.OnToFindNpc();
+        yield return new WaitForSeconds(3);
         Config.passIndex++;
         if (Config.passIndex >= Config.passName.Length)
         {

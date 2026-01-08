@@ -6,5 +6,7 @@ public class CreateWallManager : Singleton<CreateWallManager>
 {
     public bool isCreate;
     public GameObject createObj;
-    
+
+    public int wallCount = 0;
+    public int stonesCount = 0;
 }

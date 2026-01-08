@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SystemScripts;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetManager : Singleton<NetManager>
 {
@@ -17,6 +18,10 @@ public class NetManager : Singleton<NetManager>
             PFunc.Log("ÏûÏ¢¿Õ");
             return;
         }
+
+        Scene scene =SceneManager.GetActiveScene();
+
+        if (!Config.passName.Contains(scene.name)) return;
 
         switch (dataInfo.call)
         {
@@ -105,6 +110,12 @@ public class NetManager : Singleton<NetManager>
             case "Áé»ê¿½ÎÊ":
                 ModVideoPlayerCreater.Instance.OnPlayMenace();
                 break;
+            case "ÎÚÈøÆæÓ²¿Ø":
+                ModVideoPlayerCreater.Instance.OnPlayWuSaQi(true);
+                break;
+            case "Áé»ê¿½ÎÊÓ²¿Ø":
+                ModVideoPlayerCreater.Instance.OnPlayMenace(true);
+                break;
             case "ÉÏµõ":
                 ItemCreater.Instance.OnCreateHangSelf();
                 break;
@@ -149,6 +160,12 @@ public class NetManager : Singleton<NetManager>
                 break;
             case "À×µç":
                 ItemCreater.Instance.OnCreateLazzer(1);
+                break;
+            case "×©¿é+10":
+                CreateWallManager.Instance.wallCount += 10;
+                break;
+            case "Ê¯Í·+10":
+                CreateWallManager.Instance.stonesCount += 10;
                 break;
         }
     }

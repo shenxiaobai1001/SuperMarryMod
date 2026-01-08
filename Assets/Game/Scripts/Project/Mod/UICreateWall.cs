@@ -7,8 +7,13 @@ using UnityEngine.EventSystems;
 public class UICreateWall : MonoBehaviour, IPointerClickHandler
 {
     public GameObject NormalWall;
-    public GameObject BlackNormalWall;
+    public GameObject Stone;
     public GameObject uiNormalWall; // UI图标，会跟随鼠标移动
+    public GameObject uiStone; // UI图标，会跟随鼠标移动
+    public GameObject createParent;
+    public GameObject center;
+    public Text tx_WallCount;
+    public Text ty_StoneCount;
 
     [Header("创建参数")]
     public float zPosition = 90f; // 生成的物体Z轴位置
@@ -26,32 +31,26 @@ public class UICreateWall : MonoBehaviour, IPointerClickHandler
     // 上次创建时间
     private float lastCreateTime = 0f;
 
+    GameObject uiObj;
+    bool createWall = false;
+    bool createStone=false;
     // 用于对齐的网格大小
     private float gridSize = 0.5f;
 
     // Start is called before the first frame update
     void Start()
     {
-        uiNormalWall.Click(OnCreateWall);
+        uiNormalWall.Click(OnCreateWall,0);
+        uiStone.Click(OnCreateStone,0);
+    }
 
-        // 记录原始位置和父物体
+    void OnCreateWall( )
+    {
+        if (isCreating) return; // 已经在创建状态则忽略
+        isCreating = true;
         originalUIPosition = uiNormalWall.transform.position;
         originalParent = uiNormalWall.transform.parent;
         originalSiblingIndex = uiNormalWall.transform.GetSiblingIndex();
-
-        // 如果没有设置检测层级，则默认检测所有层级
-        if (checkLayer.value == 0)
-        {
-            checkLayer = LayerMask.GetMask("Default");
-        }
-    }
-
-    void OnCreateWall()
-    {
-        if (isCreating) return; // 已经在创建状态则忽略
-
-        isCreating = true;
-
         // 进入创建状态
         CreateWallManager.Instance.isCreate = true;
         CreateWallManager.Instance.createObj = NormalWall;
@@ -59,11 +58,34 @@ public class UICreateWall : MonoBehaviour, IPointerClickHandler
         // 将UI图标移到顶层并开始跟随鼠标
         uiNormalWall.transform.SetAsLastSibling();
         uiNormalWall.GetComponent<Button>().enabled = false;
+        uiObj = uiNormalWall;
+        createWall = true;
+        Debug.Log("开始创建墙壁，按住左键连续创建，右键取消");
+    }
+
+    void OnCreateStone()
+    {
+        if (isCreating) return; // 已经在创建状态则忽略
+        isCreating = true;
+        originalUIPosition = uiStone.transform.position;
+        originalParent = uiStone.transform.parent;
+        originalSiblingIndex = uiStone.transform.GetSiblingIndex();
+        // 进入创建状态
+        CreateWallManager.Instance.isCreate = true;
+        CreateWallManager.Instance.createObj = Stone;
+
+        // 将UI图标移到顶层并开始跟随鼠标
+        uiStone.transform.SetAsLastSibling();
+        uiStone.GetComponent<Button>().enabled = false;
+        uiObj = uiStone;
+        createStone = true;
         Debug.Log("开始创建墙壁，按住左键连续创建，右键取消");
     }
 
     void Update()
     {
+        if (center) center.SetActive(CreateWallManager.Instance.wallCount > 0 || CreateWallManager.Instance.stonesCount > 0);
+        
         if (isCreating)
         {
             // 更新UI图标位置，使其跟随鼠标
@@ -89,30 +111,40 @@ public class UICreateWall : MonoBehaviour, IPointerClickHandler
                 CancelCreation();
             }
         }
+        OnSetText();
     }
 
     void UpdateUIPosition()
     {
-        if (uiNormalWall == null) return;
+        if (uiObj == null) return;
 
         // 获取鼠标位置
         Vector3 mousePos = Input.mousePosition;
 
         // 直接将UI图标移到鼠标位置
-        uiNormalWall.transform.position = mousePos;
+        uiObj.transform.position = mousePos;
     }
 
     void TryCreateWall()
     {
         if (CreateWallManager.Instance.createObj == null) return;
-
+        if(CreateWallManager.Instance.wallCount<=0&& createWall) return;
+        if (CreateWallManager.Instance.stonesCount <= 0 && createStone) return;
         // 获取鼠标在世界坐标中的位置
         Vector3 worldPosition = GetMouseWorldPosition();
         if (IsPositionOccupied(worldPosition)) return;
         // 对齐到网格
         Vector3 alignedPosition = AlignToGrid(worldPosition);
         alignedPosition.z = zPosition;
-        GameObject newWall = Instantiate(CreateWallManager.Instance.createObj, alignedPosition, Quaternion.identity);
+        GameObject newWall = SimplePool.Spawn(CreateWallManager.Instance.createObj, alignedPosition, Quaternion.identity);
+        newWall.transform.SetParent(createParent.transform); 
+        if (createWall)
+        {
+            newWall.GetComponent<BreakBrickController>().toPool = true;
+            CreateWallManager.Instance.wallCount--;
+        }
+        if (createStone)
+            CreateWallManager.Instance.stonesCount--;
     }
 
     bool IsPositionOccupied(Vector3 position)
@@ -121,32 +153,36 @@ public class UICreateWall : MonoBehaviour, IPointerClickHandler
         float checkRadius = 0.5f;
         // 2D检测
         Collider2D[] colliders = Physics2D.OverlapCircleAll(new Vector2(position.x, position.y), checkRadius, checkLayer);
-        PFunc.Log("检测", colliders.Length);
-        return colliders.Length > 0;
 
+        return colliders.Length > 0;
     }
 
     void CancelCreation()
     {
-        Debug.Log("取消墙壁创建");
-
         // 恢复UI
         ResetUI();
 
         // 退出创建状态
         isCreating = false;
         CreateWallManager.Instance.isCreate = false;
-        uiNormalWall.GetComponent<Button>().enabled = true;
+        if (uiObj)
+        {
+            uiObj.GetComponent<Button>().enabled = true;
+            uiObj = null;
+        }
+       
+        createWall = false;
+        createStone=false;
     }
 
     void ResetUI()
     {
-        if (uiNormalWall == null) return;
+        if (uiObj == null) return;
 
         // 恢复UI的原始位置、父物体和层级
-        uiNormalWall.transform.position = originalUIPosition;
-        uiNormalWall.transform.SetParent(originalParent);
-        uiNormalWall.transform.SetSiblingIndex(originalSiblingIndex);
+        uiObj.transform.position = originalUIPosition;
+        uiObj.transform.SetParent(originalParent);
+        uiObj.transform.SetSiblingIndex(originalSiblingIndex);
     }
 
     Vector3 GetMouseWorldPosition()
@@ -191,6 +227,11 @@ public class UICreateWall : MonoBehaviour, IPointerClickHandler
         return new Vector3(alignedX, alignedY, position.z);
     }
 
+    void OnSetText()
+    {
+        tx_WallCount.text = $"X{CreateWallManager.Instance.wallCount}";
+        ty_StoneCount.text = $"X{CreateWallManager.Instance.stonesCount}";
+    }
     // 实现IPointerClickHandler接口
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -205,12 +246,6 @@ public class UICreateWall : MonoBehaviour, IPointerClickHandler
 
     void OnDestroy()
     {
-        // 清理事件监听
-        Button button = uiNormalWall.GetComponent<Button>();
-        if (button != null)
-        {
-            button.onClick.RemoveListener(OnCreateWall);
-        }
 
         // 取消创建
         CancelCreation();

@@ -36,7 +36,7 @@ public class RollStone : MonoBehaviour
     {
         isClimbing = false;
         isWaitingForClimb = false;
-        transform.localPosition = new Vector3(0.5f, 0);
+        transform.localPosition = new Vector3(0.5f, -0.25f);
         endPos = transform.position.x + 25;
         mainMoveCoroutine= StartCoroutine(OnStartMoveStone());
     }
@@ -55,7 +55,7 @@ public class RollStone : MonoBehaviour
                 currentRockIndex = (currentRockIndex + 1) % moveObj.Length;
                 moveObj[currentRockIndex].SetActive(true);
                 GameObject go = moveObj[currentRockIndex];
-                go.transform.position = new Vector3(transform.position.x, transform.position.y- 1, 93);
+                go.transform.position = new Vector3(transform.position.x, transform.position.y - 1, 93);
               
                 // 等待石头动画完成
                 go.transform.DOMove(new Vector3(go.transform.position.x, transform.position.y, 93), 0.2f)
@@ -64,11 +64,10 @@ public class RollStone : MonoBehaviour
                     .OnComplete(() =>
                     {
                         go.transform.position = new Vector3(go.transform.position.x, 0, 93);
-                    })
-                    .WaitForCompletion();
+                    });
 
         
-                transform.position += new Vector3(1, 0);
+                transform.position += new Vector3(1, -0.25f);
             }
             yield return new WaitForSeconds(0.3f);
             // 2. 进行射线检测，判断前方是否有障碍物

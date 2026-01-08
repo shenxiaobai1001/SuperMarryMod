@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 2
+  Patrolspeed: 12
   pushForce: 500
   isTouchByPlayer: 0
   isPatrolling: 0
@@ -448,7 +449,7 @@ SpriteRenderer:
   m_SortingLayerID: 1077319881
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -3759720019986560860, guid: 9a569984145514a2bb2802ef51df788b,
+  m_Sprite: {fileID: -5929980976416009630, guid: 9a569984145514a2bb2802ef51df788b,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

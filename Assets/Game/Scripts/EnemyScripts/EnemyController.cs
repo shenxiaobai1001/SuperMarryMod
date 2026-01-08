@@ -173,7 +173,7 @@ namespace EnemyScripts
             canMove = false;
             isDead = true;
             if (flyKoopa) flyKoopa.StopFlying();
-
+            if (flyFish) flyFish.StopFlight();
             _enemyAnim.SetBool(DieB, true);
        
             if (CompareTag("Goomba"))

@@ -24,7 +24,6 @@ namespace EnemyScripts
                 _enemyAudio.PlayOneShot(hitByPlayerSound);
                 if (other.rigidbody)
                 other.rigidbody.AddForce(new Vector2(0f, _enemyController.pushForce));
-                PFunc.Log("OnCollisionEnter2D",other.rigidbody, _enemyController.pushForce);
                 _enemyController.Die();
             }
         }

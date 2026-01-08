@@ -137,7 +137,7 @@ public class ItemCreater : MonoBehaviour
                 break;
             case "duck":
                 float value1 = UnityEngine.Random.Range(0, 6);
-                createPos = new Vector3(CreatePos2.position.x+5, CreatePos2.position.y+ value1, CreatePos2.position.z);
+                createPos = new Vector3(CreatePos2.position.x+5, CreatePos2.position.y+ value1, 90);
                 break;
             case "mangseng":
                 createPos = new Vector3(vector.x -15, vector.y+10, vector.z);
@@ -251,7 +251,7 @@ public class ItemCreater : MonoBehaviour
     public void OnCreateHangSelf()
     {
         Vector3 vectorPlayer = PlayerController.Instance.transform.position;
-        Vector3 createPos = new Vector3(vectorPlayer.x-2, 0);
+        Vector3 createPos = new Vector3(vectorPlayer.x-2, vectorPlayer.y+1.8f);
         GameObject obj = SimplePool.Spawn(hangself, createPos, Quaternion.identity);
         obj.transform.SetParent(transform);
         Sound.PlaySound("Mod/hangself");

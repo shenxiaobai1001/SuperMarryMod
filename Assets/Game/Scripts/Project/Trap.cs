@@ -75,7 +75,7 @@ public class Trap : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!ModData.mTrap)  return;
-        if (!isTriggered && !isMoving && other.CompareTag("Player"))
+        if (!isTriggered && !isMoving &&( other.CompareTag("Player")|| other.CompareTag("BigPlayer")))
         {
             TriggerTrap();
         }
@@ -85,7 +85,7 @@ public class Trap : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (!ModData.mTrap) return;
-        if (!isTriggered && !isMoving && collision.gameObject.CompareTag("Player"))
+        if (!isTriggered && !isMoving && (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("BigPlayer")))
         {
             TriggerTrap();
         }
@@ -94,6 +94,7 @@ public class Trap : MonoBehaviour
     // ´¥·¢ÏÝÚå
     private void TriggerTrap()
     {
+        ModData.tiggerTrapCount++;
         isTriggered = true;
         isMoving = true;
 

@@ -93,7 +93,6 @@ public class FlyFish : MonoBehaviour
         {
             enemyController.Die();
         }
-        Debug.Log("飞行完成");
     }
 
     /// <summary>

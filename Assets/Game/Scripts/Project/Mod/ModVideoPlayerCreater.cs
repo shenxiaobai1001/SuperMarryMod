@@ -130,11 +130,26 @@ public class ModVideoPlayerCreater : MonoBehaviour
             StopCoroutine(beatCoroutine);
             beatCoroutine = null;
         }
-
-        PlayerModController.Instance.OnTriggerModAnimator("endMenace");
+        bool hasPlaying = false;
+        for (int i = 0; i < videoParent.childCount; i++)
+        {
+            if (videoParent.GetChild(i).gameObject.activeSelf)
+            {
+                hasPlaying = true;
+                break; 
+            }
+        }
+        if (!hasPlaying)
+        {
+            PlayerModController.Instance.OnChanleModAni();
+            PlayerController.Instance.isHit = false;
+        }
     }
-    public void OnPlayWuSaQi()
+    public void OnPlayWuSaQi(bool isHit=false)
     {
+        if (ItemCreater.Instance.isHang)
+            PlayerModController.Instance.OnCancelHangSelf();
+        PlayerController.Instance.isHit= isHit;
         int number = Random.Range(1, 13);
         float scaleValue = Random.Range(0.5f, 2);
         int rotateValue= Random.Range(0, 360);
@@ -143,17 +158,19 @@ public class ModVideoPlayerCreater : MonoBehaviour
         OnCreateModVideoPlayer(Vector3.zero, scale, rotate, "GreenScreen/wusaqi", 2);
         Invoke("OnTriggerDao", 0.9f);
     }
-    public void OnPlayMenace()
+    public void OnPlayMenace(bool isHit = false)
     {
+        PlayerController.Instance.isHit = isHit;
         if (ItemCreater.Instance.isHang)
             PlayerModController.Instance.OnCancelHangSelf();
+
         int number = Random.Range(1, 39);
-        OnCreateModVideoPlayer(new Vector3(0.5f,0.1f), Vector3.one, Vector3.zero, $"Question/{number}", 2);
-        PlayerModController.Instance.OnTriggerModAnimator("menace");
+        OnCreateModVideoPlayer(new Vector3(0.5f,0.1f,90), Vector3.one, Vector3.zero, $"Question/{number}", 2);
+        PlayerModController.Instance.OnTiggerManace();
     }
     void OnTriggerDao()
     {
-        PlayerModController.Instance.OnTriggerModAnimator("dao");
+        PlayerModController.Instance.OnTiggerDao();
     }
     string nullDUCK = "GreenScreen/Duck/Null";
     string getDUCK = "GreenScreen/Duck/Get";

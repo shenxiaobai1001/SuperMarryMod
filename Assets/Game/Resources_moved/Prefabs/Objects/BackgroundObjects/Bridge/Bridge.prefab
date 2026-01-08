@@ -72,9 +72,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1174619263
+  m_SortingLayer: 6
+  m_SortingOrder: 2
   m_Sprite: {fileID: -995625731, guid: 7d0f2c8eae0fa104984c643eaa1ccbaf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -147,6 +147,7 @@ MonoBehaviour:
   initialSpeed: 8
   gravity: 9.8
   horizontalVelocity: 4
+  breakBrickController: {fileID: 0}
 --- !u!1 &3955285577504609267
 GameObject:
   m_ObjectHideFlags: 0
@@ -254,9 +255,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1174619263
+  m_SortingLayer: 6
+  m_SortingOrder: 2
   m_Sprite: {fileID: -1399682479, guid: 7d0f2c8eae0fa104984c643eaa1ccbaf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -329,6 +330,7 @@ MonoBehaviour:
   initialSpeed: 8
   gravity: 9.8
   horizontalVelocity: 4
+  breakBrickController: {fileID: 0}
 --- !u!1 &6089544599191967012
 GameObject:
   m_ObjectHideFlags: 0
@@ -401,9 +403,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1174619263
+  m_SortingLayer: 6
+  m_SortingOrder: 2
   m_Sprite: {fileID: 1154470852, guid: 7d0f2c8eae0fa104984c643eaa1ccbaf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -476,6 +478,7 @@ MonoBehaviour:
   initialSpeed: 8
   gravity: 9.8
   horizontalVelocity: 4
+  breakBrickController: {fileID: 0}
 --- !u!1 &6605210253685824729
 GameObject:
   m_ObjectHideFlags: 0
@@ -489,7 +492,7 @@ GameObject:
   - component: {fileID: 1424346932884009752}
   m_Layer: 0
   m_Name: Bridge
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -542,7 +545,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.24}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -553,7 +556,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.1, y: 1}
+  m_Size: {x: 1.1, y: 0.5}
   m_EdgeRadius: 0
 --- !u!114 &1424346932884009752
 MonoBehaviour:
@@ -572,7 +575,9 @@ MonoBehaviour:
   - {fileID: 1229985931212188911}
   - {fileID: 119534108200007833}
   - {fileID: 3271994760673430730}
+  canBreakBrick: []
   collider2D: {fileID: 6415518613155855421}
+  toPool: 0
 --- !u!1 &7300040807058508726
 GameObject:
   m_ObjectHideFlags: 0
@@ -645,9 +650,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1174619263
+  m_SortingLayer: 6
+  m_SortingOrder: 2
   m_Sprite: {fileID: -1947217416, guid: 7d0f2c8eae0fa104984c643eaa1ccbaf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -720,3 +725,4 @@ MonoBehaviour:
   initialSpeed: 8
   gravity: 9.8
   horizontalVelocity: 4
+  breakBrickController: {fileID: 0}

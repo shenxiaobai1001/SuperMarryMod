@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 namespace SystemScripts
 {
@@ -28,6 +29,8 @@ namespace SystemScripts
 
         public AudioClip pauseSound;
         public AudioClip stageClearSound;
+
+        public GameObject NpcTalk;
 
         private bool _pauseTrigger;
 
@@ -59,6 +62,7 @@ namespace SystemScripts
             mLife = ModData.mLife;
             tx_life.text = mLife.ToString();
             LiveStart.SetActive(false);
+            NpcTalk.SetActive(false);
         }
 
         private void Update()
@@ -91,13 +95,21 @@ namespace SystemScripts
                 _highScore = Score;
             }
 
+            if (ModData.mTrap)
+            {
+                tx_trap.text = $"{ModData.tiggerTrapCount}/{ModData.allTrapCount}";
+            }
+            else
+            {
+                tx_trap.text = "0";
+            }
             SetCoin();
             SetLevel();
             SetScore(playerScoreText, Score);
             SetLive();
             Pause();
         }
-
+        public TextMeshProUGUI tx_trap;
         private void SetScore(TextMeshProUGUI scoreText, int score)
         {
             switch (score.ToString().Length)
@@ -250,6 +262,7 @@ namespace SystemScripts
 
         private void Start()
         {
+            EventManager.Instance.AddListener(Events.NpcTalkShow, OnShowNpcTalk);
             if (currentLifeCoroutine != null)
             {
                 StopCoroutine(currentLifeCoroutine);
@@ -317,6 +330,15 @@ namespace SystemScripts
                 tx_createCount.text = showValue;
                 yield return new WaitForSeconds(0.1f);
             }
+        }
+
+        public void OnShowNpcTalk(object msg)
+        {
+            NpcTalk.SetActive(true);
+        }
+        private void OnDestroy()
+        {
+            EventManager.Instance.RemoveListener(Events.NpcTalkShow, OnShowNpcTalk);
         }
     }
 }

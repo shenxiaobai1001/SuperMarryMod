@@ -29,7 +29,6 @@ namespace EnemyScripts
         {
             if (!other.gameObject.CompareTag("Player")&&!other.gameObject.CompareTag("Ground"))
             {
-                PFunc.Log(other.gameObject.tag);
                 _enemyAudio.PlayOneShot(kickSound);
             }
 
