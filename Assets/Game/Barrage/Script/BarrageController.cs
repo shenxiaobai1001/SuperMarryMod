@@ -219,6 +219,9 @@ public class BarrageController : MonoBehaviour
             case "抓鸭子":
                 ModVideoPlayerCreater.Instance.OnCreateDuckVideoPlayer();
                 break;
+            case "抓乌龟":
+                ModVideoPlayerCreater.Instance.OnCreateKoopaVideoPlayer();
+                break;
             case "乌萨奇":
                 ModVideoPlayerCreater.Instance.OnPlayWuSaQi();
                 break;
@@ -281,6 +284,9 @@ public class BarrageController : MonoBehaviour
                 break;
             case "石头+10":
                 CreateWallManager.Instance.stonesCount += 10;
+                break;
+            case "美女盲盒":
+                ModVideoPlayerCreater.Instance.OnPlayGrilVideo();
                 break;
         }
     }

@@ -9,6 +9,7 @@ public class RollStone : MonoBehaviour
     public GameObject[] moveObj;
     public GameObject center;
     public GameObject rayCheck;
+    public string sound;
 
     float movePos;
     float startPos;
@@ -56,7 +57,8 @@ public class RollStone : MonoBehaviour
                 moveObj[currentRockIndex].SetActive(true);
                 GameObject go = moveObj[currentRockIndex];
                 go.transform.position = new Vector3(transform.position.x, transform.position.y - 1, 93);
-              
+
+                Sound.PlaySound($"Mod/{sound}");
                 // 等待石头动画完成
                 go.transform.DOMove(new Vector3(go.transform.position.x, transform.position.y, 93), 0.2f)
                     .SetLoops(2, LoopType.Yoyo)
@@ -77,6 +79,7 @@ public class RollStone : MonoBehaviour
             PFunc.Log("进行射线检测", hit.collider, isClimbing);
             if (hit.collider != null )
             {
+
                 if (!isClimbing && !isWaitingForClimb)
                 {
                     // 3. 如果检测到障碍物，且不在爬升状态，则开始爬升
@@ -91,7 +94,7 @@ public class RollStone : MonoBehaviour
             }
             else
             {
-                if (!isClimbing && !isWaitingForClimb)
+                if (!isClimbing && !isWaitingForClimb &&transform.position.y > 0)
                 {
                     // 3. 如果检测到障碍物，且不在爬升状态，则开始爬升
                     isClimbing = true;
@@ -121,6 +124,7 @@ public class RollStone : MonoBehaviour
             transform.Translate(Vector3.up * moveSpeed * Time.deltaTime);
             yield return null;
         }
+        
 
         isClimbing = false;
     }
@@ -129,7 +133,7 @@ public class RollStone : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, raycastDistance, groundLayer);
         PFunc.Log("OnMoveUp", hit.collider, isClimbing);
 
-        // 持续向上移动，直到不再检测到障碍物
+        // 持续向下移动，直到检测到障碍物
         while (hit.collider == null)
         {
             hit = Physics2D.Raycast(transform.position, Vector2.down, raycastDistance, groundLayer);

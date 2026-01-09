@@ -33,6 +33,7 @@ public class ManyArrow : MonoBehaviour
                 int randomIndex = Random.Range(0, availableSprites.Count);
                 GameObject selectedSprite = availableSprites[randomIndex];
 
+                Sound.PlaySound("Mod/arrow");
                 // Ö´ÐÐ¶¯»­
                 ExecuteArrowAnimation(selectedSprite, round);
 

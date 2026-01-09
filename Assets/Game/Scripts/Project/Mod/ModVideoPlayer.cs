@@ -22,7 +22,7 @@ public class ModVideoPlayer : MonoBehaviour
 
     int videoType = 0;
     Vector3 scale = Vector3.one;
-    public void OnPlayVideo(Vector3 offset, Vector3 scale, Vector3 rotate, string path,int type, string layer = "Default", bool snake = false)
+    public void OnPlayVideo(Vector3 offset, Vector3 scale, Vector3 rotate, string path,int type, string layer = "Default", bool snake = false, int sortingOrder=-5)
     {
         PFunc.Log("OnPlayVideo", path, layer);
         normalPlayer.SetActive(type==1);
@@ -35,7 +35,7 @@ public class ModVideoPlayer : MonoBehaviour
         pathTitle = path;
         snakeScene = snake; OnInitPlayer();
         if (mCanvas) mCanvas.sortingLayerName = layer;  // Sorting Layer Ãû³Æ
-        if (mCanvas) mCanvas.sortingOrder = -5;         // Order in Laye
+        if (mCanvas) mCanvas.sortingOrder = sortingOrder;         // Order in Laye
         OnBeginGetVideo();
     }
 

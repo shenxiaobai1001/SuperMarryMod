@@ -174,6 +174,7 @@ public class PlayerModMoveController : MonoBehaviour
 
         // 处理移动优先级
         HandleMovementPriority(newEffect);
+
     }
 
     /// <summary>所有移动都完成时调用的方法 </summary>
@@ -200,10 +201,14 @@ public class PlayerModMoveController : MonoBehaviour
         if (isInStalemate)
         {
             // Max级别可以打断僵持
-            if (newEffect.giftLevel > 2)
+            if (newEffect.giftLevel > stalemateEffect1.giftLevel)
             {
                 StopStalemate();
                 SetCurrentMoveEffect(newEffect);
+            }
+            else
+            {
+                HandleSameLevelMovement(newEffect);
             }
             return;
         }
@@ -299,12 +304,9 @@ public class PlayerModMoveController : MonoBehaviour
     {
         while (true)
         {
-            yield return waitForFixedUpdate;
-            if (currentMoveEffect == null)
-                 continue;
-
-             currentMoveEffect.remainingTime -= Time.fixedDeltaTime;
-
+            yield return null;
+            if (currentMoveEffect == null) continue;
+                PFunc.Log(currentMoveEffect.moveType, ItemCreater.Instance.lockPlayer);
             if (ItemCreater.Instance != null && ItemCreater.Instance.lockPlayer)
             {
                 PlayerModController.Instance.OnChangeState(false);
@@ -313,9 +315,10 @@ public class PlayerModMoveController : MonoBehaviour
             }
             else
             {
+
                 if (!PlayerModController.Instance.isKinematic)
                 {
-                    PlayerModController.Instance.OnChangeState(false);
+                    PlayerModController.Instance.OnChangeStateTrue();
                     PlayerModController.Instance.OnSetPlayerIns(true);
                     yield return null;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
                 }
@@ -326,21 +329,19 @@ public class PlayerModMoveController : MonoBehaviour
                     continue;
                 }
 
-                // 更新移动状态
-                if (currentMoveEffect != null)
+                if(currentMoveEffect != null)
                 {
                     PlayerController.Instance.isHit = true;
                     UpdateMovement();
                 }
             }
-        
         }
     }
 
     private void UpdateMovement()
     {
         if (currentMoveEffect == null) return;
-
+        currentMoveEffect.remainingTime -= Time.deltaTime;
         // 时间到，结束移动
         if (currentMoveEffect.remainingTime <= 0)
         {
@@ -444,8 +445,9 @@ public class PlayerModMoveController : MonoBehaviour
 
     private void UpdateStalemate()
     {
-        stalemateRemainingTime -= Time.fixedDeltaTime;
-
+        stalemateRemainingTime -= Time.deltaTime;
+        if (stalemateEffect1 != null) stalemateEffect1.remainingTime-= Time.deltaTime;
+        if (stalemateEffect2 != null) stalemateEffect2.remainingTime -= Time.deltaTime;
         if (stalemateRemainingTime <= 0)
         {
             EndStalemate();
@@ -489,19 +491,15 @@ public class PlayerModMoveController : MonoBehaviour
 
         if (stalemateEffect1 != null && stalemateEffect2 != null)
         {
-            float effect1Remaining = stalemateEffect1.remainingTime - stalemateRemainingTime;
-            float effect2Remaining = stalemateEffect2.duration - stalemateRemainingTime;
+            float effect1Remaining = stalemateEffect1.remainingTime ;
+            float effect2Remaining = stalemateEffect2.remainingTime;
 
-            if (effect1Remaining > 0 && effect1Remaining >= effect2Remaining)
+            if (effect1Remaining > 0 && effect1Remaining> effect2Remaining)
             {
-                stalemateEffect1.remainingTime = effect1Remaining;
-                stalemateEffect1.duration = effect1Remaining;
                 nextEffect = stalemateEffect1;
             }
-            else if (effect2Remaining > 0)
+            else if (effect2Remaining > 0 && effect2Remaining > effect1Remaining)
             {
-                stalemateEffect2.remainingTime = effect2Remaining;
-                stalemateEffect2.duration = effect2Remaining;
                 nextEffect = stalemateEffect2;
             }
         }

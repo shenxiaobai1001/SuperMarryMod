@@ -348,6 +348,7 @@ MonoBehaviour:
   - "\u52A8\u611FDJ"
   - "\u4E07\u7BAD\u9F50\u53D1"
   - "\u6293\u9E2D\u5B50"
+  - "\u6293\u4E4C\u9F9F"
   - "\u4E4C\u8428\u5947"
   - "\u7075\u9B42\u62F7\u95EE"
   - "\u4E4C\u8428\u5947\u786C\u63A7"
@@ -369,6 +370,7 @@ MonoBehaviour:
   - "\u96F7\u7535"
   - "\u7816\u5757+10"
   - "\u77F3\u5934+10"
+  - "\u7F8E\u5973\u76F2\u76D2"
   prankType: 0
   content: {fileID: 7068550229684085340}
   item: {fileID: 8778753865026988281, guid: efca32274d0dcbf48802281ecb1b1840, type: 3}
@@ -3043,6 +3045,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6853270138464274203}
     m_Modifications:
+    - target: {fileID: 920324185916922161, guid: 9b0d90a8e7c362e429e7a445924404bb,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1406380330315213615, guid: 9b0d90a8e7c362e429e7a445924404bb,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -3068,10 +3075,20 @@ PrefabInstance:
       propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3717761707292314813, guid: 9b0d90a8e7c362e429e7a445924404bb,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3781858810901413296, guid: 9b0d90a8e7c362e429e7a445924404bb,
         type: 3}
       propertyPath: m_Text
       value: 1280x960
+      objectReference: {fileID: 0}
+    - target: {fileID: 4865752315637268967, guid: 9b0d90a8e7c362e429e7a445924404bb,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5012353635077272420, guid: 9b0d90a8e7c362e429e7a445924404bb,
         type: 3}

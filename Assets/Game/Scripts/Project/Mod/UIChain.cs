@@ -1,3 +1,4 @@
+using DG.Tweening;
 using PlayerScripts;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,18 +41,31 @@ public class UIChain : MonoBehaviour
         if (Config.chainCount <= 0) return;
         if (Input.GetKeyDown(KeyCode.Space)|| Input.GetKeyDown(KeyCode.K))
         {
+            Sound.PlaySound("Mod/paopao");
             OnRande();
             Config.chainCount--;
-            if (Config.chainCount <= 0) {
-                ItemCreater.Instance.lockPlayer = false;
-                center.SetActive(false);
-                PlayerController.Instance.isHit = false;
-                SimplePool.Despawn(ChainPlayer.Instance.gameObject);
-                PlayerModController.Instance.OnSetPlayerIns(true);
-                PlayerModController.Instance.OnChangeState(true);
+            if (Config.chainCount <= 0)
+            {
+                OnChekcMinZero();
+                return;
             }
+            ChainPlayer.Instance.transform.DOShakePosition(1, 1)
+              .SetEase(Ease.OutQuad)
+              .OnComplete(() => {
+              ChainPlayer.Instance.transform.position = new Vector3(Camera.main.transform.position.x, 5, 0); });
         }
         tx_number.text = $"{Config.chainCount}";
+    }
+
+   public void OnChekcMinZero()
+    {
+        ItemCreater.Instance.lockPlayer = false;
+        center.SetActive(false);
+        PlayerController.Instance.isHit = false;
+        SimplePool.Despawn(ChainPlayer.Instance.gameObject);
+        PlayerModController.Instance.OnSetPlayerIns(true);
+        PlayerModController.Instance.OnChangeState(true);
+        
     }
 
     public void OnRande()

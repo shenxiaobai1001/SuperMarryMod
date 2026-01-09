@@ -43,7 +43,7 @@ namespace EnemyScripts
                 // StartCoroutine(Die(other.gameObject));
                 if (!playerController.isInvulnerable)
                 {
-                    _enemyAudio.PlayOneShot(hitPlayerSound);
+                   // _enemyAudio.PlayOneShot(hitPlayerSound);
                     GameStatusController.IsDead = true;
                     GameStatusController.Live -= 1;
                     playerController.GetComponent<Rigidbody2D>().isKinematic = true;

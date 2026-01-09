@@ -88,6 +88,7 @@ public class MonsterCreater : MonoBehaviour
                 {
                     yield return new WaitUntil(() => !Config.isLoading);
                 }
+                Sound.PlaySound("smb_1-up");
                 Transform createPos = CreatePos1;
                 createPos = OnGetCreatePos(data);
                 GameObject obj = InstantiateSingleMonster(monsterPrefab, createPos);

@@ -3039,7 +3039,7 @@ MonoBehaviour:
   jumpBigSound: {fileID: 8300000, guid: 9f125e09913194dc991970e850fc89c6, type: 3}
   flagPoleSound: {fileID: 8300000, guid: 60807c213729b49f692a8e664a26eda0, type: 3}
   pipeSound: {fileID: 8300000, guid: ceae4130f96724ca1b89b5c049a7d4b8, type: 3}
-  dieSound: {fileID: 8300000, guid: b95f4a2385c8e4b838ad7f8208f3f5e1, type: 3}
+  dieSound: {fileID: 0}
   oneUpSound: {fileID: 8300000, guid: 3f31e86ed123442c9a4ee815ffa6ca30, type: 3}
   turnBigSound: {fileID: 8300000, guid: a2c3a74013fcc4ed38bf5a5d6008932c, type: 3}
   coinSound: {fileID: 8300000, guid: f145a6a1bcf60439aa6a3c271d13f107, type: 3}

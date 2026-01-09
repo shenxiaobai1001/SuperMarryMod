@@ -140,7 +140,7 @@ public class ItemCreater : MonoBehaviour
                 createPos = new Vector3(CreatePos2.position.x+5, CreatePos2.position.y+ value1, 90);
                 break;
             case "mangseng":
-                createPos = new Vector3(vector.x -15, vector.y+10, vector.z);
+                createPos = new Vector3(vector.x -15, vector.y+10, 0);
                 break;
             case "rollStone":
             case "rollArrow":
@@ -169,7 +169,7 @@ public class ItemCreater : MonoBehaviour
                 createPos = new Vector3(vector.x + value, -5, 0);
                 break;
             case "chainPlayer":
-                createPos = new Vector3(Camera.main.transform.position.x, 5, 0);
+                createPos = new Vector3(Camera.main.transform.position.x, 5, 90);
                 break;
             case "Electricity":
                 createPos = vector;
@@ -202,6 +202,7 @@ public class ItemCreater : MonoBehaviour
                 rollingRockController.OnBeginShow();
                 break;
             case "Meteorite":
+                Sound.PlaySound("Mod/meterorite");
                 Meteorite meteorite = obj.GetComponent<Meteorite>();
                 meteorite.OnBeginMove();
                 break;
@@ -251,14 +252,19 @@ public class ItemCreater : MonoBehaviour
     public void OnCreateHangSelf()
     {
         Vector3 vectorPlayer = PlayerController.Instance.transform.position;
-        Vector3 createPos = new Vector3(vectorPlayer.x-2, vectorPlayer.y+1.8f);
+        float value = GameStatusController.IsHidden ? 32 : 0;
+        Vector3 createPos = new Vector3(vectorPlayer.x-2, value);
         GameObject obj = SimplePool.Spawn(hangself, createPos, Quaternion.identity);
         obj.transform.SetParent(transform);
         Sound.PlaySound("Mod/hangself");
         isHang = true;
         PlayerModController.Instance.OnHangSelf();
     }
-    public void OnCreateMangSeng(int count) => CreateItem(mangseng, count, "mangseng", 1);
+    public void OnCreateMangSeng(int count) {
+
+        if (lockPlayer) Config.chainCount++;
+        CreateItem(mangseng, count, "mangseng", 1);
+    }
     public void OnCreateRollStone(int count) => CreateItem(rollStone, count, "rollStone", 1);
     public void OnCreateRollArrow(int count) => CreateItem(rollArrow, count, "rollArrow", 1);
     public void OnCreateMeteorite(int count) => CreateItem(Meteorite, count, "Meteorite", 1);
@@ -266,12 +272,21 @@ public class ItemCreater : MonoBehaviour
     public int qlCount=0;
     public void OnCreateQiLinBi(int count)
     {
+        if (lockPlayer)
+        {
+            Config.chainCount -= 2;
+            if (Config.chainCount <= 0)
+            {
+                UIChain.Instance.OnChekcMinZero();
+            }
+        }
         qlCount += count;
         CreateItem(QiLinBi, count, "QiLinBi", 1);
     }
     public int tcCount = 0;
     public void OnCreateTCJiao(int count)
     {
+        if (lockPlayer) Config.chainCount += 2;
         tcCount += count;
         CreateItem(TCJiao, count, "TCJiao", 1);
     }
@@ -282,11 +297,13 @@ public class ItemCreater : MonoBehaviour
         PlayerController.Instance.isHit = true;
         lockPlayer = true;
         UIChain.Instance.OnStartMove();
+        Sound.PlaySound("Mod/lock");
         CreateItem(chainPlayer, count, "chainPlayer", 1);
     }
     public void OnCreateLazzer(int count)
     {
-     
+        if ( lockPlayer) Config.chainCount++;
+        Sound.PlaySound("Mod/lazzer");
         CreateItem(Electricity, count, "Electricity", 1);
     }
 

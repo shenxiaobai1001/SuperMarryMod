@@ -2,6 +2,7 @@
 using SystemScripts;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEditor.IMGUI.Controls.PrimitiveBoundsHandle;
 
 namespace PlayerScripts
 {
@@ -12,18 +13,18 @@ namespace PlayerScripts
         public float speed = 410f;
         public float slideDownSpeed = 410f;
         public float jumpForce = 1050;
-        private float _flagPos;
-        private float _startInvincible;
-        private float _invincibleTime;
+        public float _flagPos;
+        public float _startInvincible;
+        public float _invincibleTime;
         [Range(0, 1)] public float smoothTime = 0.6f;
         public bool isDead;
-        private bool _isOnGround;
-        private bool _isEatable;
-        [HideInInspector] public bool _isFinish;
-        private bool _isNotHugPole;
-        [HideInInspector]public bool _isFacingRight;
-        private bool _isGoingDownPipeAble;
-        private bool _isAboveSpecialPipe;
+        public bool _isOnGround;
+        public bool _isEatable;
+        public bool _isFinish;
+        public bool _isNotHugPole;
+        public bool _isFacingRight;
+        public bool _isGoingDownPipeAble;
+        public bool _isAboveSpecialPipe;
         public bool isWalkingToCastle;
         public bool isInCastle;
         public bool isStopTime;
@@ -87,6 +88,7 @@ namespace PlayerScripts
                 Destroy(gameObject);
                 return;
             }
+            isSpecialDie = false;
             _isFacingRight = true;
             isInvulnerable = false;
             if (GameStatusController.PlayerTag != null)
@@ -116,7 +118,7 @@ namespace PlayerScripts
                 // 修改1：J键 - 攻击/加速
                 HandleJKeyInput();
                 // 修改2：K键 - 跳跃
-                if (Input.GetKeyDown(KeyCode.K) && _isOnGround)
+                if (Input.GetKeyDown(KeyCode.K) && _isOnGround|| Input.GetKeyDown(KeyCode.Space) && _isOnGround)
                 {
                     _playerAudio.PlayOneShot(GameStatusController.IsBigPlayer ? jumpSound : jumpBigSound);
                     _isOnGround = false;
@@ -150,12 +152,11 @@ namespace PlayerScripts
                     _playerRb.isKinematic = true;
                     transform.Translate(slideDownSpeed / 2.5f * Time.deltaTime * Vector3.down);
                 }
-                if (transform.position.y <= -2 && checkYpos)
+                if (transform.position.y <= -2 && checkYpos&&!isDead)
                 {
                     checkYpos = false;
                     GameStatusController.IsDead = true;
                     isRest = true;
-                    OnDieFunc();
                 }
 
                 if (GameStatusController.IsHidden&& transform.position.y<25)
@@ -172,7 +173,7 @@ namespace PlayerScripts
         private void HandleJKeyInput()
         {
             // J键按下：发射火球（攻击）
-            if (Input.GetKeyDown(KeyCode.J) && GameStatusController.IsFirePlayer)
+            if (Input.GetKeyDown(KeyCode.J) && GameStatusController.IsFirePlayer || Input.GetMouseButtonDown(0) && GameStatusController.IsFirePlayer)
             {
                 Instantiate(fireBallPrefab, fireBallParent.position, fireBallParent.rotation);
                 _playerAudio.PlayOneShot(fireballSound);
@@ -235,7 +236,7 @@ namespace PlayerScripts
 
         private void FixedUpdate()
         {
-           if (isHit) return;
+            if (isHit) return;
             if (GameStatusController.IsGameFinish)
             {
                 transform.Translate(slideDownSpeed / 1.25f * Time.deltaTime * Vector3.right);
@@ -264,7 +265,6 @@ namespace PlayerScripts
                 Physics2D.IgnoreLayerCollision(8, 9, true);
                 StartCoroutine(BeVulnerable());
             }
-
             if (isDead)
             {
                 checkYpos = false;
@@ -281,7 +281,7 @@ namespace PlayerScripts
 
             if (_isFinish)
             {
-                if (transform.position.y > 1.5f)
+                if (transform.position.y >= 1.5f)
                 {
                     _playerAnim.SetBool(HugB, true);
                     _playerAnim.SetFloat(SpeedF, 0);
@@ -298,6 +298,7 @@ namespace PlayerScripts
 
                     _playerRb.isKinematic = false;
                     StartCoroutine(HugPole());
+           
                     if (_isNotHugPole)
                     {
                         transform.localScale = Vector3.one;
@@ -307,6 +308,8 @@ namespace PlayerScripts
                 }
             }
         }
+        float hugPoleTime = 1.5f;
+        float hugTime = 0;
 
         private void MovePlayer()
         {
@@ -341,32 +344,13 @@ namespace PlayerScripts
         {
             if (other.gameObject.CompareTag("EnemyBody"))
             {
-                if (!GameStatusController.IsBigPlayer)
-                {
-                    // StartCoroutine(Die(other.gameObject));
-                    PFunc.Log("OnCollisionEnter2D", isInvulnerable);
-                    if (!isInvulnerable)
-                    {
-                        Sound.PlaySound("smb_mariodie");
-                        GameStatusController.IsDead = true;
-                        GameStatusController.Live -= 1;
-                        _playerRb.isKinematic = true;
-                        _playerRb.velocity = Vector2.zero;
-                    }
-                    else
-                    {
-                        Physics2D.IgnoreCollision(GetComponent<Collider2D>(), smallPlayerCollider.GetComponent<Collider2D>());
-                    }
-                }
-                else if (GameStatusController.IsBigPlayer)
-                {
-                    GameStatusController.IsBigPlayer = false;
-                    GameStatusController.IsFirePlayer = false;
-                    GameStatusController.PlayerTag = "Player";
-                    gameObject.tag = GameStatusController.PlayerTag;
-                    ChangeAnim();
-                    isInvulnerable = true;
-                }
+                OnDieNFunc();
+                return;
+            }
+            else if(other.gameObject.CompareTag("Arrow"))
+            {
+                isSpecialDie = true;
+                OnDieNFunc();
                 return;
             }
             if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Pipe") ||
@@ -405,17 +389,17 @@ namespace PlayerScripts
                 playerSprite.SetActive(false);
             }
 
-            if (other.gameObject.CompareTag("DeathAbyss"))
-            {
-                _playerAudio.PlayOneShot(dieSound);
-                GameStatusController.Live -= 1;
-                GameStatusController.IsBigPlayer = false;
-                GameStatusController.IsFirePlayer = false;
-                GameStatusController.PlayerTag = "Player";
-                GameStatusController.IsDead = true;
-                _playerRb.isKinematic = true;
-                _playerRb.velocity = Vector2.zero;
-            }
+            //if (other.gameObject.CompareTag("DeathAbyss"))
+            //{
+            //    //_playerAudio.PlayOneShot(dieSound);
+            //    GameStatusController.Live -= 1;
+            //    GameStatusController.IsBigPlayer = false;
+            //    GameStatusController.IsFirePlayer = false;
+            //    GameStatusController.PlayerTag = "Player";
+            //    GameStatusController.IsDead = true;
+            //    _playerRb.isKinematic = true;
+            //    _playerRb.velocity = Vector2.zero;
+            //}
 
             if (other.gameObject.CompareTag("1UpMushroom") && _isEatable)
             {
@@ -485,6 +469,35 @@ namespace PlayerScripts
             }
        
         }
+        void OnDieNFunc()
+        {
+            if (!GameStatusController.IsBigPlayer)
+            {
+                // StartCoroutine(Die(other.gameObject));
+                PFunc.Log("OnCollisionEnter2D", isInvulnerable);
+                if (!isInvulnerable)
+                {
+              
+                    GameStatusController.IsDead = true;
+                    GameStatusController.Live -= 1;
+                    _playerRb.isKinematic = true;
+                    _playerRb.velocity = Vector2.zero;
+                }
+                else
+                {
+                    Physics2D.IgnoreCollision(GetComponent<Collider2D>(), smallPlayerCollider.GetComponent<Collider2D>());
+                }
+            }
+            else if (GameStatusController.IsBigPlayer)
+            {
+                GameStatusController.IsBigPlayer = false;
+                GameStatusController.IsFirePlayer = false;
+                GameStatusController.PlayerTag = "Player";
+                gameObject.tag = GameStatusController.PlayerTag;
+                ChangeAnim();
+                isInvulnerable = true;
+            }
+        }
 
         private void OnCollisionExit2D(Collision2D other)
         {
@@ -553,6 +566,7 @@ namespace PlayerScripts
             ChangeAnim();
         }
         Vector3 deadPos=Vector3.zero;
+        
         private void Die()
         {
             //playerCol.SetActive(false);
@@ -562,15 +576,30 @@ namespace PlayerScripts
             OnDieFunc();
         }
         Coroutine DieCoroutine = null;
+        bool isSpecialDie = false;
         void OnDieFunc()
         {
-            if (DieCoroutine==null)
+            if (isSpecialDie)
             {
-                PlayerModController.Instance.OnSetPlayerIns(false);
-                PlayerModController.Instance.OnChangeState(false);
-                deadPos =isRest?new Vector3(-2,0): transform.position;
-                DieCoroutine = StartCoroutine(DieAnim());
+                if (DieCoroutine == null)
+                {
+               
+                    PlayerModController.Instance.OnSetPlayerIns(false);
+                    PlayerModController.Instance.OnChangeState(false);
+                    deadPos = isRest ? new Vector3(-2, 0) : new Vector3(transform.position.x, transform.position.y+2, transform.position.z);
+                    DieCoroutine = StartCoroutine(DieAnim());
+                }
             }
+            else
+            {
+                if (DieCoroutine == null)
+                {
+                    PlayerModController.Instance.OnChangeState(false);
+                    deadPos = isRest ? new Vector3(-2, 4) : new Vector3(transform.position.x, transform.position.y + 2, transform.position.z);
+                    DieCoroutine = StartCoroutine(NormalDie());
+                }
+            }
+
         }
 
         private void GetPlayerSpeed()
@@ -625,16 +654,55 @@ namespace PlayerScripts
                 yield return playerBreak.OnAddAllForceIE();
             }
             ModData.mLife--;
-            if (isRest|| ModData.mLife <= 0)
+
+            if (ModData.mLife < 0)
             {
-               yield return StartCoroutine(LoadingScene());
+                Sound.PlaySound("smb_mariodie");
+                yield return StartCoroutine(LoadingScene());
+            }
+            else if (isRest || GameManager.Instance.time<=0)
+            {
+                string name = Config.passName[Config.passIndex];
+                GameModController.Instance.OnLoadScene(name);
             }
             else
             {
                 yield return playerBreak.OnHuifuIE();
                 GameStatusController.IsDead = false;
+                ResetPlayerState(deadPos);
+                DieCoroutine = null;
             }
-            ResetPlayerState(deadPos);
+       
+        }
+
+        IEnumerator NormalDie()
+        {
+            PFunc.Log("玩家死亡");
+            playerCol.SetActive(false);
+            _playerAnim.SetBool(DieB,true);
+            yield return new WaitForSeconds(0.5f);
+            while (transform.position.y>-3)
+            {
+                transform.Translate(Vector3.down * 6 * Time.deltaTime);
+                yield return null;
+            }
+            ModData.mLife--;
+            if (ModData.mLife < 0)
+            {
+                Sound.PlaySound("smb_mariodie");
+                yield return StartCoroutine(LoadingScene());
+            }
+            else if (isRest || GameManager.Instance.time <= 0)
+            {
+                string name = Config.passName[Config.passIndex];
+                GameModController.Instance.OnLoadScene(name);
+            }
+            else 
+            {
+                GameStatusController.IsDead = false;
+                ResetPlayerState(deadPos);
+            }
+     
             DieCoroutine = null;
         }
 
@@ -787,14 +855,15 @@ namespace PlayerScripts
             isStopTime = false;
             isInvulnerable = false;
             isInvincible = false;
-
+            isSpecialDie = false;
+            isRest = false;
             // 重置输入状态变量
             _isSprinting = false;
             _isCrouching = false;
 
             // 重置速度相关变量
             speed = 410f;
-            slideDownSpeed = 410f;
+            slideDownSpeed = 5;
             jumpForce = 1050;
 
     
@@ -864,7 +933,7 @@ namespace PlayerScripts
             {
                 _playerAudio.Stop();
             }
-
+            hugTime = 0;
             // 10. 重置速度插值
             _velocity = Vector3.zero;
 

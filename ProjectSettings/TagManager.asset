@@ -42,6 +42,7 @@ TagManager:
   - Axesystem
   - NPC
   - HorSpecialPipe
+  - Arrow
   layers:
   - Default
   - TransparentFX

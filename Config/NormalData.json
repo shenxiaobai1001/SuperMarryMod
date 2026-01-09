@@ -1,7 +1,7 @@
 {
     "NormalConfigs": [
         {
-            "CallName": "动感DJ",
+            "CallName": "乌龟一只",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -9,15 +9,23 @@
             "Delay": 0.0
         },
         {
-            "CallName": "随机天火",
+            "CallName": "滚刺",
+            "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "一库",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
             "Count": 10,
-            "Delay": 1.7999999523162842
+            "Delay": 1.0
         },
         {
-            "CallName": "全屏天火",
+            "CallName": "麒麟臂",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -25,23 +33,15 @@
             "Delay": 0.0
         },
         {
-            "CallName": "随机地火",
+            "CallName": "天残脚",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
             "Count": 1,
-            "Delay": 0.0
+            "Delay": 1.0
         },
         {
-            "CallName": "全屏地火",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
-        },
-        {
-            "CallName": "随机传送",
+            "CallName": "万箭齐发",
             "Type": "礼物",
             "Message": "",
             "Tip": "",
@@ -81,7 +81,7 @@
             "Delay": 0.0
         },
         {
-            "CallName": "石头+10",
+            "CallName": "美女盲盒",
             "Type": "礼物",
             "Message": "",
             "Tip": "",

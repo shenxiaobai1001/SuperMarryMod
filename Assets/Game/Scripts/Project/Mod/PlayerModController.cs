@@ -43,18 +43,21 @@ public class PlayerModController : MonoBehaviour
     [HideInInspector]public bool isKinematic = false;
     public void OnChangeState(bool open)
     {
+        rigidbody2D.velocity = Vector3.zero;
         rigidbody2D.isKinematic = !open;
         isKinematic = !open;
         Center.SetActive(open);
     }
     public void OnChangeStateTrue()
     {
+        rigidbody2D.velocity = Vector3.zero;
         rigidbody2D.isKinematic = true;
         isKinematic = true;
         Center.SetActive(false);
     }
     public void OnChangeStateFalse()
     {
+        rigidbody2D.velocity = Vector3.zero;
         rigidbody2D.isKinematic = false;
         isKinematic = false;
         Center.SetActive(true);
@@ -197,7 +200,10 @@ public class PlayerModController : MonoBehaviour
     {
         OnShowModAnimation(5);
         OnSetPlayerIns(true);
+
+        animator.SetTrigger("endMenace");
     }
+
     void OnShowModAnimation(int index)
     {
         OnSetPlayerIns(false);
@@ -205,7 +211,6 @@ public class PlayerModController : MonoBehaviour
             modAnimations[i].gameObject.SetActive(i==index);
         }
     }
-
 
     private void OnDestroy()
     {

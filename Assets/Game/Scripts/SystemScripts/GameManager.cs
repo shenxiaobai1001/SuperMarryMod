@@ -22,7 +22,7 @@ namespace SystemScripts
         public Transform hiddenOutPos;
         public bool isStairLevel;
 
-        public float time = 400;
+        public float time = 3;
         public float finalTime;
 
         private void Awake()
@@ -214,7 +214,7 @@ namespace SystemScripts
 
         private static IEnumerator NextLevel()
         {
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(1);
             Config.passIndex++;
             string name = Config.passName[Config.passIndex];
             PFunc.Log(Config.passIndex, name);

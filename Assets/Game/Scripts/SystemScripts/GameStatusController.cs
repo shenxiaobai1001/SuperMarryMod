@@ -39,6 +39,8 @@ namespace SystemScripts
         private static int _highScore;
         public static int Live;
         public static int CurrentLevel;
+
+        public static bool isDead;
         public static bool IsDead;
         public static bool IsGameOver;
         public static bool IsStageClear;

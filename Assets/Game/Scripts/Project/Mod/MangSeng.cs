@@ -35,7 +35,7 @@ public class MangSeng : MonoBehaviour
     {
         // ÏòÍæ¼ÒÒÆ¶¯
         transform.position = Vector3.MoveTowards(transform.position, playerTarget.position, moveSpeed * Time.deltaTime);
-        if (Vector3.Distance(transform.position, playerTarget.position) < 1.3f)
+        if (Vector3.Distance(transform.position, playerTarget.position) < 1.5f)
         {
             kickPlayer = false;
             PlayerModMoveController.Instance.TriggerModMove(MoveType.Normal, new Vector3(1,0.5f), 20,0.5f,true,false,1);

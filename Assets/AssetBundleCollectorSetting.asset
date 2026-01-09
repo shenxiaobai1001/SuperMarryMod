@@ -118,3 +118,11 @@ MonoBehaviour:
         FilterRuleName: CollectAll
         AssetTags: 
         UserData: 
+      - CollectPath: Assets/Game/Resources_video/GirlMysteryBox
+        CollectorGUID: 973e6a7e35f947a43984be5562c01cbd
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackVideoFile
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 

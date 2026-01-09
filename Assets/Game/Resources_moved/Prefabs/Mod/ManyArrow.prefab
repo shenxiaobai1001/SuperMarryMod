@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3136625404040635354}
   m_Layer: 9
   m_Name: 7 (1)
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -226,7 +226,7 @@ GameObject:
   - component: {fileID: 5353374349520104251}
   m_Layer: 9
   m_Name: 8 (1)
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -447,7 +447,7 @@ GameObject:
   - component: {fileID: 8257670970433242172}
   m_Layer: 9
   m_Name: 4
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -633,7 +633,7 @@ GameObject:
   - component: {fileID: 3380396531114277597}
   m_Layer: 9
   m_Name: 6
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -884,7 +884,7 @@ GameObject:
   - component: {fileID: 7232455101743191425}
   m_Layer: 9
   m_Name: 2
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1093,7 +1093,7 @@ GameObject:
   - component: {fileID: 1757082940584353890}
   m_Layer: 9
   m_Name: 1
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1251,7 +1251,7 @@ GameObject:
   - component: {fileID: 3251916899448232008}
   m_Layer: 9
   m_Name: 3
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1461,7 +1461,7 @@ GameObject:
   - component: {fileID: 4106013855654227175}
   m_Layer: 9
   m_Name: 8
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1682,7 +1682,7 @@ GameObject:
   - component: {fileID: 8898952908617326258}
   m_Layer: 9
   m_Name: 5
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1888,7 +1888,7 @@ GameObject:
   - component: {fileID: 4561567179747796256}
   m_Layer: 9
   m_Name: 6 (1)
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2139,7 +2139,7 @@ GameObject:
   - component: {fileID: 357385370084688709}
   m_Layer: 9
   m_Name: 2 (1)
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2347,7 +2347,7 @@ GameObject:
   - component: {fileID: 8291140707493516699}
   m_Layer: 0
   m_Name: ManyArrow
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2454,7 +2454,7 @@ GameObject:
   - component: {fileID: 4299104349164022697}
   m_Layer: 9
   m_Name: 4 (1)
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2640,7 +2640,7 @@ GameObject:
   - component: {fileID: 9199938749753117875}
   m_Layer: 9
   m_Name: 5 (1)
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2846,7 +2846,7 @@ GameObject:
   - component: {fileID: 7339896622548243170}
   m_Layer: 9
   m_Name: 7
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3058,7 +3058,7 @@ GameObject:
   - component: {fileID: 7489359735776719020}
   m_Layer: 9
   m_Name: 3 (1)
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3268,7 +3268,7 @@ GameObject:
   - component: {fileID: 6893394622580165822}
   m_Layer: 9
   m_Name: 1 (1)
-  m_TagString: EnemyBody
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
