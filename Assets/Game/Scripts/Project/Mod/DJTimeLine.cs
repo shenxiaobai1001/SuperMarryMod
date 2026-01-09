@@ -24,7 +24,7 @@ public class DJTimeLine
         // 视频2的卡点数据
         beatMapData[2] = new List<float>();
         // 2秒-5秒9次（间隔0.33秒）
-        for (int i = 0; i <= 9; i++) beatMapData[2].Add(2f + i * 0.33f);
+        for (int i = 0; i <= 12; i++) beatMapData[2].Add(2f + i * 0.33f);
         // 5秒-8秒8次（间隔0.375秒）
         for (int i = 0; i <= 8; i++) beatMapData[2].Add(5f + i * 0.375f);
         // 11秒-15秒9次（间隔0.444秒）

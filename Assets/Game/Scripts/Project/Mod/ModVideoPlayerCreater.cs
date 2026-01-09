@@ -41,9 +41,9 @@ public class ModVideoPlayerCreater : MonoBehaviour
     public void OnPlayDJ()
     {
         if (Config.isLoading) return;
-        int number = Random.Range(1, 13);
-        currentVideoNumber = number;
-        OnCreateModVideoPlayer(Vector3.zero, Vector3.one, Vector3.zero, $"DJ/{number}", 1);
+       // int number = Random.Range(1, 13);
+        currentVideoNumber = 1;
+        OnCreateModVideoPlayer(Vector3.zero, Vector3.one, Vector3.zero, $"DJ/{currentVideoNumber}", 1);
         isPlayDJ = true;
 
     }
