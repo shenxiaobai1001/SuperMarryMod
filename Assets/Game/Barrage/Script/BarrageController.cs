@@ -2,10 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using PlayerScripts;
 using SystemScripts;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [Serializable]
@@ -28,13 +27,30 @@ public class BarrageBoxSetting
     public string Tip; // 提示
     public int Count; // 倍率
     public float Delay; // 延迟
+    public string videoName; // 选择的视频
+
+    public List<string> Calls = new List<string>(); // 盲盒所有功能
+}
+
+[Serializable]
+public class BarrageSpecialBoxSetting
+{
+    public string BoxName; // 盲盒名称
+    public string Type; // 数据类型名称
+    public string Message; // 触发内容
+    public string Tip; // 提示
+    public int Count; // 倍率
+    public float Delay; // 延迟
+    public string videoName; // 选择的视频
+
     public List<string> Calls = new List<string>(); // 盲盒所有功能
 }
 
 public enum PrankType
 {
     normal,
-    box
+    box,
+    special
 }
 
 public class BarrageNormalWrapper
@@ -47,12 +63,17 @@ public class BarrageBoxWrapper
     public List<BarrageBoxSetting> BoxConfigs;
 }
 
+public class BarrageSpecialWrapper
+{
+    public List<BarrageSpecialBoxSetting> SpecialConfigs;
+}
+
 public class BarrageController : MonoBehaviour
 {
     public static BarrageController Instance { get; set; }
 
     // 功能名称
-    public List<string> Calls = new List<string> ();
+    public List<string> Calls = new List<string>();
 
     [Tooltip("当前整蛊配置类型")]
     public PrankType prankType;
@@ -60,8 +81,11 @@ public class BarrageController : MonoBehaviour
     public GameObject content;
     public GameObject item;
     public GameObject box;
+    public GameObject special;
+
     public List<BarrageNormalSetting> barrageNormalSetting = new List<BarrageNormalSetting>();
     public List<BarrageBoxSetting> barrageBoxSetting = new List<BarrageBoxSetting>();
+    public List<BarrageSpecialBoxSetting> barrageSpecialBoxSetting = new List<BarrageSpecialBoxSetting>();
     public bool isInit;
 
     private class ActionTask
@@ -78,7 +102,7 @@ public class BarrageController : MonoBehaviour
     private readonly Dictionary<string, Coroutine> _runners = new Dictionary<string, Coroutine>();
     private readonly Dictionary<string, float> _lastExec = new Dictionary<string, float>();
 
-    public void EnqueueAction(string user, string avatar, string callName, int giftCount, int times, float delay)
+    public void EnqueueAction(string user, string avatar, string callName, int giftCount, int times, float delay, bool isBox = false)
     {
         if (string.IsNullOrEmpty(callName)) return;
         if (!_queues.TryGetValue(callName, out var q))
@@ -123,21 +147,25 @@ public class BarrageController : MonoBehaviour
     }
 
     /// <summary>
+    /// 从 Box 播放视频并等待播放结束（VideoManager 播放完会 Despawn 自己）
+    /// </summary>
+    public IEnumerator PlayBoxVideoAndWait(string boxPath, int playerType = 2, bool snake = false, Transform parent = null)
+    {
+        Debug.Log(boxPath);
+
+
+        GameObject obj = ModVideoPlayerCreater.Instance.OnCreateModVideoPlayer(Vector3.zero, Vector3.one, Vector3.zero, boxPath, 2, "Default", false, -10);
+
+        // 等待对象被回收或失活
+        yield return new WaitUntil(() => obj == null || !obj.activeInHierarchy);
+    }
+
+    /// <summary>
     /// 执行功能
     /// </summary>
     /// <param name="task"></param>
     private void ExecuteAction(ActionTask task)
     {
-        if (task == null)
-        {
-            PFunc.Log("消息空");
-            return;
-        }
-
-        Scene scene = SceneManager.GetActiveScene();
-
-        if (!Config.passName.Contains(scene.name)) return;
-
         switch (task.callName)
         {
             case "乌龟一只":
@@ -322,10 +350,15 @@ public class BarrageController : MonoBehaviour
             RemoveAllItem();
             InitNormalConfig();
         }
-        else
+        else if (type == (int)PrankType.box)
         {
             RemoveAllItem();
             InitBoxConfig();
+        }
+        else if (type == (int)PrankType.special)
+        {
+            RemoveAllItem();
+            InitSpecialConfig();
         }
     }
 
@@ -334,7 +367,7 @@ public class BarrageController : MonoBehaviour
     /// </summary>
     public void AddItem()
     {
-        if(prankType == PrankType.normal)
+        if (prankType == PrankType.normal)
         {
             GameObject obj = Instantiate(item, content.transform);
             Dropdown dropdown = obj.transform.GetChild(1).GetComponent<Dropdown>();
@@ -347,13 +380,21 @@ public class BarrageController : MonoBehaviour
             config.Count = 1;
             barrageNormalSetting.Add(config);
         }
-        else
+        else if (prankType == PrankType.box)
         {
             GameObject obj = Instantiate(box, content.transform);
 
             BarrageBoxSetting config = new BarrageBoxSetting();
             config.Count = 1;
             barrageBoxSetting.Add(config);
+        }
+        else if (prankType == PrankType.special)
+        {
+            GameObject obj = Instantiate(special, content.transform);
+
+            BarrageSpecialBoxSetting config = new BarrageSpecialBoxSetting();
+            config.Count = 1;
+            barrageSpecialBoxSetting.Add(config);
         }
     }
 
@@ -362,7 +403,7 @@ public class BarrageController : MonoBehaviour
     /// </summary>
     public void RemoveAllItem()
     {
-        foreach(Transform obj in content.transform)
+        foreach (Transform obj in content.transform)
         {
             Destroy(obj.gameObject);
         }
@@ -406,9 +447,9 @@ public class BarrageController : MonoBehaviour
         BarrageNormalWrapper wrapper = new BarrageNormalWrapper();
         wrapper.NormalConfigs = barrageNormalSetting;
 
-        string filePath1 = Path.Combine(Directory.GetCurrentDirectory(),"Config" , "NormalData.json");
+        string filePath1 = Path.Combine(Directory.GetCurrentDirectory(), "Config", "NormalData.json");
 
-        string jsonData1 = JsonUtility.ToJson(wrapper, true); 
+        string jsonData1 = JsonUtility.ToJson(wrapper, true);
 
         File.WriteAllText(filePath1, jsonData1);
 
@@ -423,6 +464,16 @@ public class BarrageController : MonoBehaviour
         File.WriteAllText(filePath2, jsonData2);
 
         Debug.Log("盲盒配置数据已保存到: " + filePath2);
+
+        BarrageSpecialWrapper barrageSpecialWrapper = new BarrageSpecialWrapper();
+        barrageSpecialWrapper.SpecialConfigs = barrageSpecialBoxSetting;
+
+        string filePath3 = Path.Combine(Directory.GetCurrentDirectory(), "Config", "SpecialData.json");
+        string jsonData3 = JsonUtility.ToJson(barrageSpecialWrapper, true);
+
+        File.WriteAllText(filePath3, jsonData3);
+
+        Debug.Log("多特效配置数据已保存到: " + filePath3);
     }
 
     /// <summary>
@@ -430,7 +481,7 @@ public class BarrageController : MonoBehaviour
     /// </summary>
     public void LoadDataFromJson()
     {
- 
+
         string filePath1 = Path.Combine(Directory.GetCurrentDirectory(), "Config", "NormalData.json");
 
         if (!File.Exists(filePath1))
@@ -452,7 +503,7 @@ public class BarrageController : MonoBehaviour
         {
             Debug.LogError($"加载失败: {e.Message}");
         }
-        
+
 
         string filePath2 = Path.Combine(Directory.GetCurrentDirectory(), "Config", "BoxData.json");
         if (!File.Exists(filePath2))
@@ -474,7 +525,28 @@ public class BarrageController : MonoBehaviour
         {
             Debug.LogError($"加载失败: {e.Message}");
         }
-        
+
+        string filePath3 = Path.Combine(Directory.GetCurrentDirectory(), "Config", "SpecialData.json");
+        if (!File.Exists(filePath3))
+        {
+            Debug.LogWarning("未找到配置文件: " + filePath3);
+            return;
+        }
+
+        try
+        {
+            string jsonData = File.ReadAllText(filePath3);
+
+            BarrageSpecialWrapper wrapper = JsonUtility.FromJson<BarrageSpecialWrapper>(jsonData);
+            barrageSpecialBoxSetting = wrapper.SpecialConfigs;
+
+            Debug.Log($"成功加载 {wrapper.SpecialConfigs.Count} 条多特效配置数据");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"加载失败: {e.Message}");
+        }
+
 
     }
 
@@ -514,8 +586,8 @@ public class BarrageController : MonoBehaviour
         {
             GameObject itemObj = Instantiate(box, content.transform);
             GameObject lineObj = itemObj.transform.GetChild(0).gameObject;
-            Dropdown dropdown = lineObj.transform.GetChild(2).GetComponent<Dropdown>();
-
+            Dropdown dropdown1 = lineObj.transform.GetChild(2).GetComponent<Dropdown>();
+            Dropdown dropdown2 = lineObj.transform.GetChild(11).GetComponent<Dropdown>();
 
             lineObj.transform.GetChild(1).GetComponent<InputField>().text = barrageBoxSetting[i].BoxName;
             lineObj.transform.GetChild(3).GetComponent<InputField>().text = barrageBoxSetting[i].Message;
@@ -523,7 +595,33 @@ public class BarrageController : MonoBehaviour
             lineObj.transform.GetChild(7).GetComponent<InputField>().text = barrageBoxSetting[i].Count.ToString();
             lineObj.transform.GetChild(9).GetComponent<InputField>().text = barrageBoxSetting[i].Delay.ToString();
 
-            ChoiceCall(dropdown, barrageBoxSetting[i].Type);
+            ChoiceCall(dropdown1, barrageBoxSetting[i].Type);
+            ChoiceCall(dropdown2, barrageBoxSetting[i].videoName);
+        }
+        isInit = true;
+    }
+
+    /// <summary>
+    /// 初始化多特效配置box
+    /// </summary>
+    public void InitSpecialConfig()
+    {
+        RemoveAllItem();
+        for (int i = 0; i < barrageSpecialBoxSetting.Count; i++)
+        {
+            GameObject itemObj = Instantiate(special, content.transform);
+            GameObject lineObj = itemObj.transform.GetChild(0).gameObject;
+            Dropdown dropdown1 = lineObj.transform.GetChild(2).GetComponent<Dropdown>();
+            Dropdown dropdown2 = lineObj.transform.GetChild(11).GetComponent<Dropdown>();
+
+            lineObj.transform.GetChild(1).GetComponent<InputField>().text = barrageSpecialBoxSetting[i].BoxName;
+            lineObj.transform.GetChild(3).GetComponent<InputField>().text = barrageSpecialBoxSetting[i].Message;
+            lineObj.transform.GetChild(5).GetComponent<InputField>().text = barrageSpecialBoxSetting[i].Tip;
+            lineObj.transform.GetChild(7).GetComponent<InputField>().text = barrageSpecialBoxSetting[i].Count.ToString();
+            lineObj.transform.GetChild(9).GetComponent<InputField>().text = barrageSpecialBoxSetting[i].Delay.ToString();
+
+            ChoiceCall(dropdown1, barrageSpecialBoxSetting[i].Type);
+            ChoiceCall(dropdown2, barrageSpecialBoxSetting[i].videoName);
         }
         isInit = true;
     }
@@ -533,10 +631,173 @@ public class BarrageController : MonoBehaviour
     {
         for (int i = 0; i < dropdown.options.Count; i++)
         {
-            if(dropdown.options[i].text == name)
+            if (dropdown.options[i].text == name)
             {
                 dropdown.value = i;
                 return;
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// 执行功能
+    /// </summary>
+    /// <param name="callName"></param>
+    public void CallFunction(string user, string avatar, string callName, int giftCount, int times, float delay)
+    {
+        for (int i = 0; i < giftCount * times; i++)
+        {
+            switch (callName)
+            {
+                case "乌龟一只":
+                    MonsterCreater.Instance.OnCreateTortoise(1);
+                    break;
+                case "乌龟十只":
+                    MonsterCreater.Instance.OnCreateTortoise(10);
+                    break;
+                case "乌龟一百只":
+                    MonsterCreater.Instance.OnCreateTortoise(100);
+                    break;
+                case "蘑菇一只":
+                    MonsterCreater.Instance.OnCreateMushroom(1);
+                    break;
+                case "蘑菇十只":
+                    MonsterCreater.Instance.OnCreateMushroom(10);
+                    break;
+                case "蘑菇一百只":
+                    MonsterCreater.Instance.OnCreateMushroom(100);
+                    break;
+                case "飞龟一只":
+                    MonsterCreater.Instance.OnCreateFlyKoopa(1);
+                    break;
+                case "飞龟十只":
+                    MonsterCreater.Instance.OnCreateFlyKoopa(10);
+                    break;
+                case "飞龟一百只":
+                    MonsterCreater.Instance.OnCreateFlyKoopa(100);
+                    break;
+                case "飞鱼一只":
+                    MonsterCreater.Instance.OnCreateFlyFish(1);
+                    break;
+                case "飞鱼十只":
+                    MonsterCreater.Instance.OnCreateFlyFish(10);
+                    break;
+                case "飞鱼一百只":
+                    MonsterCreater.Instance.OnCreateFlyFish(100);
+                    break;
+                case "甲壳虫一只":
+                    MonsterCreater.Instance.OnCreateBeatles(1);
+                    break;
+                case "甲壳虫十只":
+                    MonsterCreater.Instance.OnCreateBeatles(10);
+                    break;
+                case "甲壳虫一百只":
+                    MonsterCreater.Instance.OnCreateBeatles(100);
+                    break;
+                case "游戏时间+10s":
+                    GameManager.Instance.time += 10;
+                    break;
+                case "游戏时间-10s":
+                    GameManager.Instance.time -= 10;
+                    break;
+                case "生命+10%":
+                    ModData.mLife += (int)(ModData.mLife * 0.1f);
+                    EventManager.Instance.SendMessage(Events.OnChangeLife);
+                    break;
+                case "生命-10%":
+                    ModData.mLife -= (int)(ModData.mLife * 0.1f);
+                    EventManager.Instance.SendMessage(Events.OnChangeLife);
+                    break;
+                case "生命+1":
+                    ModData.mLife += 1;
+                    EventManager.Instance.SendMessage(Events.OnChangeLife);
+                    break;
+                case "生命-1":
+                    ModData.mLife -= 1;
+                    EventManager.Instance.SendMessage(Events.OnChangeLife);
+                    break;
+                case "扔香蕉":
+                    ItemCreater.Instance.OnCreateBanana(1);
+                    break;
+                case "动感DJ":
+                    ModVideoPlayerCreater.Instance.OnPlayDJ();
+                    break;
+                case "万箭齐发":
+                    ItemCreater.Instance.OnCreateManyArrow(1);
+                    break;
+                case "抓鸭子":
+                    ModVideoPlayerCreater.Instance.OnCreateDuckVideoPlayer();
+                    break;
+                case "抓乌龟":
+                    ModVideoPlayerCreater.Instance.OnCreateKoopaVideoPlayer();
+                    break;
+                case "乌萨奇":
+                    ModVideoPlayerCreater.Instance.OnPlayWuSaQi();
+                    break;
+                case "灵魂拷问":
+                    ModVideoPlayerCreater.Instance.OnPlayMenace();
+                    break;
+                case "乌萨奇硬控":
+                    ModVideoPlayerCreater.Instance.OnPlayWuSaQi(true);
+                    break;
+                case "灵魂拷问硬控":
+                    ModVideoPlayerCreater.Instance.OnPlayMenace(true);
+                    break;
+                case "上吊":
+                    ItemCreater.Instance.OnCreateHangSelf();
+                    break;
+                case "一库":
+                    ItemCreater.Instance.OnCreateMangSeng(1);
+                    break;
+                case "滚石":
+                    ItemCreater.Instance.OnCreateRollStone(1);
+                    break;
+                case "滚刺":
+                    ItemCreater.Instance.OnCreateRollArrow(1);
+                    break;
+                case "陨石":
+                    ItemCreater.Instance.OnCreateMeteorite(1);
+                    break;
+                case "麒麟臂":
+                    ItemCreater.Instance.OnCreateQiLinBi(1);
+                    break;
+                case "天残脚":
+                    ItemCreater.Instance.OnCreateTCJiao(1);
+                    break;
+                case "随机天火":
+                    ItemCreater.Instance.OnCreateUPFire(1);
+                    break;
+                case "全屏天火":
+                    ItemCreater.Instance.OnCreateUPFire(66);
+                    break;
+                case "随机地火":
+                    ItemCreater.Instance.OnCreateDownFire(1);
+                    break;
+                case "全屏地火":
+                    ItemCreater.Instance.OnCreateDownFire(66);
+                    break;
+                case "随机传送":
+                    GameModController.Instance.OnRandromPlayerPos();
+                    break;
+                case "随机关卡":
+                    GameModController.Instance.OnRandromPass();
+                    break;
+                case "铁链":
+                    ItemCreater.Instance.OnCreateChainPlayer(1);
+                    break;
+                case "雷电":
+                    ItemCreater.Instance.OnCreateLazzer(1);
+                    break;
+                case "砖块+10":
+                    CreateWallManager.Instance.wallCount += 10;
+                    break;
+                case "石头+10":
+                    CreateWallManager.Instance.stonesCount += 10;
+                    break;
+                case "美女盲盒":
+                    ModVideoPlayerCreater.Instance.OnPlayGrilVideo();
+                    break;
             }
         }
     }

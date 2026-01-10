@@ -25,15 +25,23 @@ public class ModController : MonoBehaviour
     public Transform createParent;
     public GameStatusController statusController;
     public UISystem uISystem;
+    public UIPrankContro uPrankContro;
+
     void Start()
     {
         DontDestroyOnLoad(gameObject);
+        BarrageController.Instance.LoadDataFromJson();
     }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             uISystem.center.SetActive(true);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            uPrankContro.ChangePrank();
         }
     }
     public IEnumerator OnDequeueObjs()

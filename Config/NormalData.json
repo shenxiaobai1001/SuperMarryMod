@@ -1,88 +1,32 @@
 {
     "NormalConfigs": [
         {
-            "CallName": "乌龟一只",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
-        },
-        {
-            "CallName": "滚刺",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
-        },
-        {
-            "CallName": "一库",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 10,
-            "Delay": 1.0
-        },
-        {
-            "CallName": "麒麟臂",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
-        },
-        {
-            "CallName": "天残脚",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 1.0
-        },
-        {
-            "CallName": "万箭齐发",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
-        },
-        {
-            "CallName": "随机关卡",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
-        },
-        {
-            "CallName": "铁链",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
-        },
-        {
-            "CallName": "雷电",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 1.0
-        },
-        {
-            "CallName": "砖块+10",
-            "Type": "礼物",
-            "Message": "",
-            "Tip": "",
-            "Count": 1,
-            "Delay": 0.0
-        },
-        {
             "CallName": "美女盲盒",
             "Type": "礼物",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "乌龟一只",
+            "Type": "",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "乌龟一只",
+            "Type": "",
+            "Message": "",
+            "Tip": "",
+            "Count": 1,
+            "Delay": 0.0
+        },
+        {
+            "CallName": "乌龟一只",
+            "Type": "",
             "Message": "",
             "Tip": "",
             "Count": 1,

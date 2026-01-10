@@ -1,16 +1,16 @@
 {
-    "BoxConfigs": [
+    "SpecialConfigs": [
         {
-            "BoxName": "123",
+            "BoxName": "",
             "Type": "礼物",
-            "Message": "小心心",
+            "Message": "",
             "Tip": "",
             "Count": 1,
             "Delay": 0.0,
-            "videoName": "关注盲盒",
+            "videoName": "火力全开",
             "Calls": [
                 "乌龟一只",
-                "生命+1"
+                "飞鱼十只"
             ]
         },
         {

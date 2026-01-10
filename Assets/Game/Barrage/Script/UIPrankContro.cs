@@ -8,6 +8,7 @@ public class UIPrankContro : MonoBehaviour
     public GameObject prankPanel;
     public Button btn_setting;
     public Button btn_boxsetting;
+    public Button btn_specialsetting;
     public Button btn_close;
     public Button btn_clear;
     public Button btn_add;
@@ -18,6 +19,7 @@ public class UIPrankContro : MonoBehaviour
     {
         btn_setting.onClick.AddListener(OnClickSetting);
         btn_boxsetting.onClick.AddListener(OnClickBoxSetting);
+        btn_specialsetting.onClick.AddListener(OnClickSpecialSetting);
         btn_close.onClick.AddListener(ChangePrank);
         btn_clear.onClick.AddListener(OnClickClear);
         btn_add.onClick.AddListener(OnClickAdd);
@@ -26,10 +28,7 @@ public class UIPrankContro : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            ChangePrank();
-        }
+
     }
 
     void OnClickSetting()
@@ -40,6 +39,11 @@ public class UIPrankContro : MonoBehaviour
     void OnClickBoxSetting()
     {
         BarrageController.Instance.ChangePrankType(1);
+    }
+
+    void OnClickSpecialSetting()
+    {
+        BarrageController.Instance.ChangePrankType(2);
     }
 
     void OnClickClear()

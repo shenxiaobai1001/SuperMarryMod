@@ -498,13 +498,14 @@ public class ModVideoPlayerCreater : MonoBehaviour
         if (getduck > 0)
             MonsterCreater.Instance.OnCreateTortoise(getduck);
     }
-    public void OnCreateModVideoPlayer(Vector3 offset, Vector3 scale, Vector3 rotateA,string path, int type, string layer = "Video", bool snake = false,int sortingOrder=-5)
+    public GameObject OnCreateModVideoPlayer(Vector3 offset, Vector3 scale, Vector3 rotateA,string path, int type, string layer = "Video", bool snake = false,int sortingOrder=-5)
     {
         GameObject vplayerObj = SimplePool.Spawn(ModVideoPlayer, transform.position, Quaternion.identity);
         ModVideoPlayer vplayer = vplayerObj.GetComponent<ModVideoPlayer>();
         vplayer.OnPlayVideo(offset, scale, rotateA, path, type, layer, snake, sortingOrder);
         vplayerObj.transform.SetParent(videoParent);
         IsPlaying = true;
+        return vplayerObj;
     }
 
     private void OnDestroy()

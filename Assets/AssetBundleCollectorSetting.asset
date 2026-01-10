@@ -126,3 +126,11 @@ MonoBehaviour:
         FilterRuleName: CollectAll
         AssetTags: 
         UserData: 
+      - CollectPath: Assets/Game/Resources_video/Box
+        CollectorGUID: 6bca4c8f306327f4c89376d6e2280c4d
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackVideoFile
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 

@@ -121,8 +121,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2071095166224120971}
-        m_TargetAssemblyTypeName: Box, Assembly-CSharp
+      - m_Target: {fileID: 5565829651593072599}
+        m_TargetAssemblyTypeName: Special, Assembly-CSharp
         m_MethodName: TestCall
         m_Mode: 1
         m_Arguments:
@@ -517,8 +517,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 2071095166224120971}
-        m_TargetAssemblyTypeName: Box, Assembly-CSharp
+      - m_Target: {fileID: 5565829651593072599}
+        m_TargetAssemblyTypeName: Special, Assembly-CSharp
         m_MethodName: LoadCalls
         m_Mode: 1
         m_Arguments:
@@ -1321,8 +1321,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2071095166224120971}
-        m_TargetAssemblyTypeName: Box, Assembly-CSharp
+      - m_Target: {fileID: 5565829651593072599}
+        m_TargetAssemblyTypeName: Special, Assembly-CSharp
         m_MethodName: ChangeConfig
         m_Mode: 1
         m_Arguments:
@@ -1635,8 +1635,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2071095166224120971}
-        m_TargetAssemblyTypeName: Box, Assembly-CSharp
+      - m_Target: {fileID: 5565829651593072599}
+        m_TargetAssemblyTypeName: Special, Assembly-CSharp
         m_MethodName: ChangeConfig
         m_Mode: 1
         m_Arguments:
@@ -2318,9 +2318,9 @@ GameObject:
   - component: {fileID: 4007033802878921421}
   - component: {fileID: 1515084709551130554}
   - component: {fileID: 8383837548254417232}
-  - component: {fileID: 2071095166224120971}
+  - component: {fileID: 5565829651593072599}
   m_Layer: 5
-  m_Name: Box
+  m_Name: Special
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2388,7 +2388,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 2
---- !u!114 &2071095166224120971
+--- !u!114 &5565829651593072599
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2397,7 +2397,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3790567738090041751}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00f74c2cbc35ae84dba55e0a8c1dd250, type: 3}
+  m_Script: {fileID: 11500000, guid: 790e7b25e9dca364ba0f24218cbed52b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   selectCalls: {fileID: 841476155384535216}
@@ -4146,19 +4146,13 @@ MonoBehaviour:
     m_Options:
     - m_Text: "\u7A7A"
       m_Image: {fileID: 0}
-    - m_Text: "\u5173\u6CE8\u76F2\u76D2"
-      m_Image: {fileID: 0}
-    - m_Text: "\u5C0F\u76F2\u76D2"
-      m_Image: {fileID: 0}
-    - m_Text: "\u91D1\u8272\u4F20\u8BF4"
-      m_Image: {fileID: 0}
-    - m_Text: "\u70B9\u8D5E\u76F2\u76D22"
+    - m_Text: "\u706B\u529B\u5168\u5F00"
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2071095166224120971}
-        m_TargetAssemblyTypeName: Box, Assembly-CSharp
+      - m_Target: {fileID: 5565829651593072599}
+        m_TargetAssemblyTypeName: Special, Assembly-CSharp
         m_MethodName: ChangeConfig
         m_Mode: 1
         m_Arguments:
@@ -4466,8 +4460,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2071095166224120971}
-        m_TargetAssemblyTypeName: Box, Assembly-CSharp
+      - m_Target: {fileID: 5565829651593072599}
+        m_TargetAssemblyTypeName: Special, Assembly-CSharp
         m_MethodName: ChangeConfig
         m_Mode: 1
         m_Arguments:
@@ -4624,8 +4618,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2071095166224120971}
-        m_TargetAssemblyTypeName: Box, Assembly-CSharp
+      - m_Target: {fileID: 5565829651593072599}
+        m_TargetAssemblyTypeName: Special, Assembly-CSharp
         m_MethodName: ChangeConfig
         m_Mode: 1
         m_Arguments:
@@ -5210,8 +5204,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2071095166224120971}
-        m_TargetAssemblyTypeName: Box, Assembly-CSharp
+      - m_Target: {fileID: 5565829651593072599}
+        m_TargetAssemblyTypeName: Special, Assembly-CSharp
         m_MethodName: Remove
         m_Mode: 1
         m_Arguments:
@@ -5459,8 +5453,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2071095166224120971}
-        m_TargetAssemblyTypeName: Box, Assembly-CSharp
+      - m_Target: {fileID: 5565829651593072599}
+        m_TargetAssemblyTypeName: Special, Assembly-CSharp
         m_MethodName: ChangeConfig
         m_Mode: 1
         m_Arguments:
@@ -6039,8 +6033,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2071095166224120971}
-        m_TargetAssemblyTypeName: Box, Assembly-CSharp
+      - m_Target: {fileID: 5565829651593072599}
+        m_TargetAssemblyTypeName: Special, Assembly-CSharp
         m_MethodName: ChangeConfig
         m_Mode: 1
         m_Arguments:
